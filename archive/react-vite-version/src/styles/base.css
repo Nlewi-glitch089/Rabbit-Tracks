@@ -1,0 +1,348 @@
+/* =========================================================
+   Rabbit Trails — base styles
+   Design tokens, resets, type, buttons, and form controls.
+
+   Palette: warm ivory and parchment surfaces, rich purple for
+   actions and headings, lavender for depth, gold as an accent.
+   Deep plum is saved for the trail's starting question.
+   ========================================================= */
+
+:root {
+  /* Surfaces */
+  --ivory: #fbf7ee;
+  --parchment: #f4ecdd;
+  --paper: #fffdf8;
+  --line: #e8decb;
+  --line-strong: #d7c8ab;
+
+  /* Purples */
+  --plum: #2a1640;
+  --purple: #5b2e91;
+  --purple-hover: #4a2478;
+  --violet: #7b52b9;
+  --lavender: #cdb8ec;
+  --lavender-soft: #ebe1f8;
+  --lavender-mist: #f6f1fc;
+
+  /* Gold. --gold-ink is the only gold used for text (passes contrast). */
+  --gold: #c99a3b;
+  --gold-bright: #dcb35a;
+  --gold-soft: #f6eacb;
+  --gold-ink: #80601d;
+
+  /* Text */
+  --ink: #2b2233;
+  --ink-2: #574d60;
+  --ink-3: #6c6273;
+
+  --danger: #a3324a;
+  --danger-hover: #8a2840;
+  --danger-soft: #f9e6ea;
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 24px;
+  --shadow-1: 0 1px 2px rgba(42, 22, 64, 0.05), 0 6px 18px -10px rgba(42, 22, 64, 0.22);
+  --shadow-2: 0 2px 4px rgba(42, 22, 64, 0.05), 0 22px 40px -22px rgba(42, 22, 64, 0.45);
+
+  --page-width: 1160px;
+  --gutter: 32px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--ivory);
+  /* Very faint paper grain */
+  background-image: radial-gradient(rgba(91, 46, 145, 0.035) 1px, transparent 1px);
+  background-size: 18px 18px;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--plum);
+  /* Fraunces' soft, slightly old-fashioned shapes */
+  font-variation-settings: 'SOFT' 60, 'WONK' 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--purple);
+}
+
+img,
+svg {
+  display: block;
+}
+
+:focus-visible {
+  outline: 3px solid var(--violet);
+  outline-offset: 2px;
+}
+
+/* Headings and <main> take focus on screen changes; no ring needed for that */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.btn--primary {
+  background: var(--purple);
+  color: var(--paper);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(42, 22, 64, 0.2);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--purple-hover);
+}
+
+.btn--secondary {
+  border-color: var(--line-strong);
+  background: var(--paper);
+  color: var(--plum);
+}
+
+.btn--secondary:hover {
+  border-color: var(--violet);
+  background: var(--lavender-mist);
+}
+
+.btn--quiet {
+  background: transparent;
+  color: var(--purple);
+}
+
+.btn--quiet:hover {
+  background: var(--lavender-mist);
+}
+
+.btn--quiet-danger {
+  background: transparent;
+  color: var(--danger);
+}
+
+.btn--quiet-danger:hover {
+  background: var(--danger-soft);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.btn--danger:hover {
+  background: var(--danger-hover);
+}
+
+.btn--danger-outline {
+  border-color: var(--danger);
+  background: var(--paper);
+  color: var(--danger);
+}
+
+.btn--danger-outline:hover {
+  background: var(--danger-soft);
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
+
+/* Square icon-only buttons (edit, delete, close, settings) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-3);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.icon-btn:hover {
+  background: var(--lavender-mist);
+  color: var(--purple);
+}
+
+.icon-btn--danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+
+/* ---------- Form controls ---------- */
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--paper);
+  line-height: 1.4;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.input::placeholder {
+  color: #9a8f9c;
+}
+
+.input:hover {
+  border-color: var(--lavender);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(123, 82, 185, 0.18);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--danger);
+  background: #fffafb;
+}
+
+.input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 4px rgba(163, 50, 74, 0.15);
+}
+
+.select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b2e91' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

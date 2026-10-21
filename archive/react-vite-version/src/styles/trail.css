@@ -1,0 +1,501 @@
+/* =========================================================
+   Trail screen: the header and the discovery path.
+
+   The path is a winding dotted line down the middle (down the
+   left edge on phones). Each discovery is a card beside it with
+   a numbered node on the line. Time gaps and milestones sit on
+   the line between steps. The question starts at a doorway at
+   the top; an open doorway at the bottom invites the next clue.
+   ========================================================= */
+
+.trail-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px 40px;
+  padding-bottom: 28px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.trail-head__title {
+  margin-top: 6px;
+  font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+.trail-head__description {
+  max-width: 62ch;
+  margin-top: 10px;
+  color: var(--ink-2);
+}
+
+.trail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  color: var(--ink-3);
+}
+
+.trail-stats strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.trail-head__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.trail-head__manage {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+
+/* ---------- The path ---------- */
+
+.path {
+  --line-x: 50%;
+  position: relative;
+  padding: 40px 32px 48px;
+  border-radius: var(--radius-lg);
+  /* Gets deeper toward the bottom, like going further down */
+  background: linear-gradient(180deg, transparent 0, var(--lavender-mist) 22%, var(--lavender-soft) 100%);
+}
+
+/* The question, in a doorway */
+.path__origin {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 50px 36px 40px;
+  border-radius: 280px 280px 18px 18px / 110px 110px 18px 18px;
+  background: var(--plum);
+  background-image: radial-gradient(90% 70% at 50% 0%, rgba(123, 82, 185, 0.55), transparent 70%);
+  box-shadow: var(--shadow-2);
+  text-align: center;
+  color: var(--paper);
+}
+
+/* Thin gold door frame */
+.path__origin::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(220, 179, 90, 0.5);
+  border-radius: 272px 272px 13px 13px / 104px 104px 13px 13px;
+  pointer-events: none;
+}
+
+.path__origin-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lavender);
+}
+
+.path__question {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.path__origin-date {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: rgba(255, 253, 248, 0.72);
+}
+
+.path__keyhole {
+  width: 10px;
+  height: 16px;
+  margin: 14px auto 0;
+  fill: var(--gold-bright);
+}
+
+.path__steps {
+  position: relative;
+  margin: 0;
+  padding: 36px 0;
+  list-style: none;
+}
+
+/* The winding dotted line */
+.path__steps::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--line-x) - 9px);
+  width: 18px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='56'%3E%3Cpath d='M9 0 C17 14 17 14 9 28 S1 42 9 56' fill='none' stroke='%238f6cc6' stroke-width='2.2' stroke-linecap='round' stroke-dasharray='0.1 7'/%3E%3C/svg%3E") repeat-y center top;
+}
+
+.path-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr);
+  align-items: start;
+}
+
+/* "2 days later" — sits on the line between steps */
+.path-step__gap {
+  grid-column: 1 / -1;
+  justify-self: center;
+  position: relative;
+  z-index: 1;
+  margin: 4px 0 14px;
+  padding: 2px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--ivory);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.path-step__node {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: center;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-top: 14px;
+  border: 2px solid var(--purple);
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: var(--shadow-1);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--purple);
+}
+
+.path-step .find {
+  grid-row: 2;
+}
+
+.path-step--left .find {
+  grid-column: 1;
+}
+
+.path-step--right .find {
+  grid-column: 3;
+}
+
+/* Short dotted tie from each card to its node */
+.path-step .find::after {
+  content: '';
+  position: absolute;
+  top: 35px;
+  width: 16px;
+  border-top: 2px dotted var(--lavender);
+}
+
+.path-step--left .find::after {
+  right: -17px;
+}
+
+.path-step--right .find::after {
+  left: -17px;
+}
+
+/* Milestone seal, e.g. "♥ Curiouser and curiouser" */
+.path-step__milestone {
+  grid-column: 1 / -1;
+  justify-self: center;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 2px;
+  padding: 4px 14px 4px 4px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  background: var(--gold-soft);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--gold-ink);
+}
+
+.seal {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: var(--paper);
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--plum);
+  font-variant-emoji: text;
+}
+
+.seal--red {
+  color: var(--danger);
+}
+
+/* Latest step: gold node, lifted card */
+.path-step.is-latest .path-step__node {
+  border-color: var(--gold);
+  background: var(--purple);
+  color: var(--paper);
+  box-shadow: 0 0 0 5px rgba(220, 179, 90, 0.3), var(--shadow-1);
+}
+
+.path-step.is-latest .find {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-2);
+}
+
+/* Just saved: a brief glow so you can see where it landed */
+.path-step.is-new .find {
+  animation: just-added 2.4s ease-out;
+}
+
+@keyframes just-added {
+  0%, 30% { box-shadow: 0 0 0 6px rgba(220, 179, 90, 0.55), var(--shadow-2); }
+  100% { box-shadow: var(--shadow-2); }
+}
+
+
+/* ---------- One discovery ---------- */
+
+.find {
+  position: relative;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow-1);
+  overflow-wrap: anywhere;
+}
+
+.find__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.find__source {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+/* First letter of the site, standing in for its icon */
+.find__favicon {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--lavender-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+.find__tools {
+  display: flex;
+  margin: -6px -10px -6px 0;
+}
+
+.find__title {
+  margin: 8px 0 10px;
+  font-size: 1.25rem;
+}
+
+.find__note {
+  padding-left: 12px;
+  border-left: 2px solid var(--gold-soft);
+  color: var(--ink-2);
+}
+
+.find__note--empty {
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+.find__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+
+.find__visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(91, 46, 145, 0.3);
+  text-underline-offset: 4px;
+}
+
+.find__visit:hover {
+  text-decoration-color: var(--purple);
+}
+
+.find__visit .icon {
+  width: 14px;
+  height: 14px;
+}
+
+
+/* ---------- Next clue ---------- */
+
+.path__next {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 44px 32px 32px;
+  border: 2px dashed rgba(123, 82, 185, 0.45);
+  border-radius: 260px 260px 18px 18px / 100px 100px 18px 18px;
+  background: rgba(255, 253, 248, 0.75);
+  text-align: center;
+}
+
+.path--empty .path__next {
+  margin-top: 40px;
+}
+
+.path__next-title {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--plum);
+}
+
+.path__next-text {
+  max-width: 38ch;
+  margin: 8px auto 20px;
+  color: var(--ink-2);
+}
+
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 900px) {
+  .trail-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .trail-head__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .trail-head__manage {
+    justify-content: flex-start;
+  }
+}
+
+/* Single column: the line runs down the left, every card on the right */
+@media (max-width: 820px) {
+  .path {
+    --line-x: 22px;
+    padding: 24px 12px 32px;
+    border-radius: 18px;
+  }
+
+  .path-step {
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  .path-step__gap,
+  .path-step__milestone {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .path-step__node {
+    grid-column: 1;
+    width: 38px;
+    height: 38px;
+    margin-top: 12px;
+    font-size: 1rem;
+  }
+
+  .path-step--left .find,
+  .path-step--right .find {
+    grid-column: 2;
+  }
+
+  .path-step--left .find::after,
+  .path-step--right .find::after {
+    left: -13px;
+    right: auto;
+    top: 31px;
+    width: 12px;
+  }
+
+  .path__origin {
+    padding: 40px 22px 30px;
+    border-radius: 200px 200px 16px 16px / 70px 70px 16px 16px;
+  }
+
+  .path__origin::before {
+    border-radius: 194px 194px 11px 11px / 65px 65px 11px 11px;
+  }
+
+  .path__next {
+    padding: 36px 20px 26px;
+    border-radius: 200px 200px 16px 16px / 70px 70px 16px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .trail-head__actions > .btn {
+    flex: 1 1 100%;
+  }
+
+  .find {
+    padding: 16px 16px 14px;
+  }
+
+  .find__title {
+    font-size: 1.12rem;
+  }
+}

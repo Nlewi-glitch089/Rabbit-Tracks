@@ -1,0 +1,370 @@
+/* =========================================================
+   Dashboard: title + question starter, the "pick up where you
+   left off" trail, the other trails, and the empty state.
+   ========================================================= */
+
+.dashboard__intro {
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 460px);
+  align-items: end;
+  gap: 24px 40px;
+  padding: 44px 0 32px;
+}
+
+.dashboard__title {
+  font-size: clamp(2.3rem, 4.2vw, 3.1rem);
+  letter-spacing: -0.015em;
+}
+
+.dashboard__summary {
+  margin-top: 6px;
+  color: var(--ink-3);
+}
+
+/* "Start a new trail" box */
+.starter {
+  padding: 14px 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow-1);
+}
+
+.starter__label {
+  display: block;
+  margin: 0 0 8px 2px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--plum);
+}
+
+.starter__row {
+  display: flex;
+  gap: 8px;
+}
+
+.starter__row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* ---------- Pick up where you left off ---------- */
+
+.continue {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 52px;
+  padding: 34px 38px;
+  border: 1px solid var(--lavender-soft);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(120% 140% at 100% 100%, var(--lavender-soft) 0%, transparent 55%),
+    var(--lavender-mist);
+}
+
+.continue__title {
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+}
+
+.continue__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.continue__title a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 6px;
+}
+
+.continue__question {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--purple);
+}
+
+.continue__latest {
+  margin-top: 20px;
+  padding-left: 14px;
+  border-left: 2px solid var(--gold);
+}
+
+.continue__latest--empty {
+  color: var(--ink-2);
+}
+
+.continue__latest-label {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.continue__latest-title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.continue__latest-domain {
+  font-size: 0.875rem;
+  color: var(--ink-3);
+}
+
+.continue__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.continue__map {
+  padding: 20px 18px 16px;
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.7);
+  border: 1px dashed var(--lavender);
+}
+
+.continue__map .trail-map {
+  width: 100%;
+  height: auto;
+}
+
+.continue__map-caption {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+
+/* ---------- Trail map drawing ---------- */
+
+.trail-map__walked {
+  fill: none;
+  stroke: var(--violet);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 5;
+}
+
+.trail-map__ahead {
+  fill: none;
+  stroke: var(--lavender);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 6;
+}
+
+.trail-map__start { fill: var(--plum); }
+.trail-map__step { fill: var(--paper); stroke: var(--purple); stroke-width: 2; }
+.trail-map__latest { fill: var(--gold-bright); stroke: var(--gold-ink); stroke-width: 1.5; }
+.trail-map__door path { fill: var(--plum); }
+.trail-map__keyhole { fill: var(--gold-bright); }
+
+
+/* ---------- Other trails ---------- */
+
+.trail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail-grid > li {
+  display: flex;
+}
+
+.trail-card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px 20px 16px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow-1);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+/* Spine on the left, like a notebook */
+.trail-card::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--lavender);
+  transition: background-color 0.2s;
+}
+
+.trail-card:hover,
+.trail-card:focus-within {
+  border-color: var(--lavender);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-2px);
+}
+
+.trail-card:hover::before,
+.trail-card:focus-within::before {
+  background: var(--gold);
+}
+
+.trail-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.trail-card__title {
+  font-size: 1.3rem;
+  overflow-wrap: anywhere;
+}
+
+.trail-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* The title link covers the whole card */
+.trail-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 16px;
+}
+
+.trail-card__link:focus-visible {
+  outline: none;
+}
+
+.trail-card__link:focus-visible::after {
+  outline: 3px solid var(--violet);
+  outline-offset: 2px;
+}
+
+/* Edit/delete sit above the card link */
+.trail-card__tools {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin: -6px -8px 0 0;
+}
+
+.trail-card__question {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.trail-card__map {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 14px 0 8px;
+}
+
+.trail-card__latest {
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.trail-card__latest span {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.trail-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-strong);
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.trail-card__latest + .trail-card__meta {
+  margin-top: 14px;
+}
+
+
+/* ---------- Empty state ---------- */
+
+.empty {
+  max-width: 480px;
+  margin: 24px auto 0;
+  padding: 40px 32px 44px;
+  border: 1.5px dashed var(--lavender);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 253, 248, 0.6);
+  text-align: center;
+}
+
+.empty__art {
+  width: 220px;
+  margin: 0 auto 16px;
+}
+
+.empty__title {
+  font-size: 1.7rem;
+}
+
+.empty__text {
+  margin: 8px 0 24px;
+  color: var(--ink-2);
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .dashboard__intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .continue {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard__intro {
+    padding: 28px 0 24px;
+  }
+
+  .continue {
+    margin-bottom: 40px;
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .continue__actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .trail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .empty {
+    padding: 32px 20px 36px;
+  }
+}

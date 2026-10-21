@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The Rabbit Trails mark: two gold footprints leading into the hole -->
+  <rect width="32" height="32" rx="7" fill="#321B4D"/>
+  <circle cx="9" cy="9" r="1.6" fill="#D6A84F"/>
+  <circle cx="13" cy="12.5" r="1.6" fill="#D6A84F"/>
+  <ellipse cx="18" cy="20" rx="10" ry="5.5" fill="#6B3FA0" stroke="#D6A84F" stroke-width="1.2"/>
+  <ellipse cx="18" cy="21" rx="6.5" ry="3.2" fill="#241B29"/>
+</svg>

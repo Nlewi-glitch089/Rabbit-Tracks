@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rabbit Trails: retrace the path to every discovery.">
+  <title>Rabbit Trails</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Handled in app.js, because "#..." addresses are used for screens -->
+  <a class="skip-link" href="#main" data-skip-link>Skip to main content</a>
+
+
+  <!-- =====================================================
+       HEADER
+       Links change the "#/..." address; app.js shows the matching screen.
+       ===================================================== -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="logo" href="#/" aria-label="Rabbit Trails, go to My trails">
+        <!-- Two footprints leading into the hole (same mark as the favicon) -->
+        <svg class="logo__mark" viewBox="0 0 40 28" aria-hidden="true" focusable="false">
+          <circle cx="5" cy="5" r="2.2" class="logo__print"/>
+          <circle cx="11" cy="10" r="2.2" class="logo__print"/>
+          <ellipse cx="25" cy="19" rx="13" ry="7" class="logo__rim"/>
+          <ellipse cx="25" cy="20" rx="8.5" ry="4.2" class="logo__hole"/>
+        </svg>
+        <span class="logo__text">Rabbit <span class="logo__accent">Trails</span></span>
+      </a>
+
+      <nav class="site-nav" aria-label="Main">
+        <a class="site-nav__link" href="#/" id="nav-my-trails">My trails</a>
+        <a class="btn btn--gold btn--small" href="#/trails/new">
+          <span aria-hidden="true">+</span> New trail
+        </a>
+        <button type="button" class="settings-button" data-action="open-settings" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+          </svg>
+          <span class="settings-button__label">Settings</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+
+  <main id="main" class="page" tabindex="-1">
+
+    <!-- =====================================================
+         STATUS SCREEN
+         Shown while loading, when something fails, or when a trail
+         or discovery doesn't exist.
+         ===================================================== -->
+    <section class="screen" id="screen-status" aria-labelledby="status-title">
+      <div class="status surface" id="status">
+        <svg class="trail-art" viewBox="0 0 240 92" aria-hidden="true" focusable="false">
+          <path class="trail-art__path" d="M14 22 C 60 6, 74 58, 118 46 S 166 26, 176 60"/>
+          <circle class="trail-art__start" cx="14" cy="22" r="6"/>
+          <ellipse class="trail-art__rim" cx="194" cy="70" rx="36" ry="12"/>
+          <ellipse class="trail-art__hole" cx="194" cy="71.5" rx="25" ry="7.5"/>
+        </svg>
+        <h1 class="status__title" id="status-title" tabindex="-1">Loading…</h1>
+        <p class="status__message" id="status-message"></p>
+        <div class="status__actions" id="status-actions"></div>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 1: DASHBOARD   (#/)
+         Heading → the most recent trail ("Continue") → all trails,
+         with the newest discoveries across every trail alongside.
+         ===================================================== -->
+    <section class="screen" id="screen-dashboard" aria-labelledby="dashboard-title">
+      <div class="dash-head">
+        <div>
+          <p class="eyebrow">Research journal</p>
+          <h1 class="page-title" id="dashboard-title" tabindex="-1">My trails</h1>
+        </div>
+        <p class="dash-head__meta" id="trail-count"></p>
+      </div>
+
+      <!-- The most recently updated trail; filled in by app.js -->
+      <section class="continue" id="continue" aria-labelledby="continue-title" hidden></section>
+
+      <div class="dash-grid" id="dash-grid">
+        <section class="dash-trails" aria-labelledby="all-trails-heading">
+          <h2 class="section-heading" id="all-trails-heading">All trails</h2>
+          <!-- Trail rows are created by app.js -->
+          <ol class="trail-list surface" id="trail-list"></ol>
+        </section>
+
+        <section class="recent" aria-labelledby="recent-heading">
+          <h2 class="section-heading" id="recent-heading">Recent discoveries</h2>
+          <!-- The newest discoveries across all trails, created by app.js -->
+          <ol class="recent-list" id="recent-list"></ol>
+        </section>
+      </div>
+
+      <!-- Shown only when there are no trails -->
+      <div class="empty-state surface" id="empty-state" hidden>
+        <svg class="trail-art" viewBox="0 0 240 92" aria-hidden="true" focusable="false">
+          <path class="trail-art__path" d="M14 22 C 60 6, 74 58, 118 46 S 166 26, 176 60"/>
+          <circle class="trail-art__start" cx="14" cy="22" r="6"/>
+          <ellipse class="trail-art__rim" cx="194" cy="70" rx="36" ry="12"/>
+          <ellipse class="trail-art__hole" cx="194" cy="71.5" rx="25" ry="7.5"/>
+        </svg>
+        <h2>No trails yet</h2>
+        <p>
+          A trail starts with a question you’re curious about. Create one, then add each
+          website you find along the way.
+        </p>
+        <a class="btn btn--primary" href="#/trails/new">
+          <span aria-hidden="true">+</span> Start a trail
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 2: CREATE / EDIT TRAIL   (#/trails/new, #/trails/ID/edit)
+         The same form is used for both. app.js changes the heading and button text.
+         ===================================================== -->
+    <section class="screen" id="screen-trail-form" aria-labelledby="trail-form-title">
+      <div class="form-page">
+        <a class="back-link" href="#/" data-cancel="trail-form">
+          <span aria-hidden="true">←</span> <span data-cancel-label>My trails</span>
+        </a>
+
+        <div class="form-card surface">
+          <p class="eyebrow" id="trail-form-eyebrow">New trail</p>
+          <h1 class="form-card__title" id="trail-form-title" tabindex="-1">Start a new trail</h1>
+          <p class="form-card__intro">Name your research and write down the question that started it.</p>
+
+          <!-- Shown if saving fails -->
+          <p class="form-alert" id="trail-form-alert" role="alert" hidden></p>
+
+          <form id="trail-form" novalidate>
+            <div class="field">
+              <label for="trail-title-input">Trail title <span class="field__tag field__tag--required">Required</span></label>
+              <input id="trail-title-input" name="title" type="text" maxlength="80" autocomplete="off"
+                     placeholder="e.g. Exploring Game Development" aria-describedby="trail-title-input-error">
+              <p class="field__error" id="trail-title-input-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label for="trail-question-input">Starting question <span class="field__tag field__tag--required">Required</span></label>
+              <input id="trail-question-input" class="field__question" name="question" type="text" maxlength="140" autocomplete="off"
+                     placeholder="e.g. How are video games made?"
+                     aria-describedby="trail-question-input-hint trail-question-input-error">
+              <p class="field__hint" id="trail-question-input-hint">The question you were trying to answer when you started.</p>
+              <p class="field__error" id="trail-question-input-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label for="trail-description-input">Description <span class="field__tag">Optional</span></label>
+              <textarea id="trail-description-input" name="description" rows="3" maxlength="300"
+                        placeholder="What are you hoping to learn?"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <a class="btn btn--secondary" href="#/" data-cancel="trail-form">Cancel</a>
+              <button type="submit" class="btn btn--primary" id="trail-form-submit">Create trail</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 3: TRAIL + TIMELINE   (#/trails/ID)
+         ===================================================== -->
+    <section class="screen" id="screen-trail" aria-labelledby="trail-title">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a class="back-link" href="#/"><span aria-hidden="true">←</span> My trails</a>
+        <span class="breadcrumb__current" id="trail-breadcrumb" aria-current="page"></span>
+      </nav>
+
+      <header class="trail-header">
+        <span class="monogram monogram--large" id="trail-mark" aria-hidden="true"></span>
+
+        <div class="trail-header__text">
+          <h1 class="trail-header__title" id="trail-title" tabindex="-1"></h1>
+          <p class="trail-header__description" id="trail-description"></p>
+
+          <dl class="trail-stats">
+            <div><dt>Discoveries</dt><dd id="trail-stat-count"></dd></div>
+            <div><dt>Started</dt><dd id="trail-stat-started"></dd></div>
+            <div><dt>Last updated</dt><dd id="trail-stat-updated"></dd></div>
+          </dl>
+        </div>
+
+        <div class="trail-header__actions">
+          <a class="btn btn--primary" id="trail-add-discovery" href="#/">
+            <span aria-hidden="true">+</span> Add discovery
+          </a>
+          <div class="trail-header__manage">
+            <a class="text-button" id="trail-edit-link" href="#/">Edit trail</a>
+            <button type="button" class="text-button text-button--danger" data-action="delete-trail">Delete trail</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- The journey: the question, each discovery in order, then the next step -->
+      <section class="journey" aria-labelledby="journey-heading">
+        <h2 class="visually-hidden" id="journey-heading">Discoveries, in the order you found them</h2>
+        <!-- Timeline items are created by app.js -->
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 4: ADD / EDIT DISCOVERY
+         (#/trails/ID/discoveries/new, #/trails/ID/discoveries/ID/edit)
+         ===================================================== -->
+    <section class="screen" id="screen-discovery-form" aria-labelledby="discovery-form-title">
+      <div class="form-page">
+        <a class="back-link" href="#/" data-cancel="discovery-form">
+          <span aria-hidden="true">←</span> Back to trail
+        </a>
+
+        <div class="form-card surface">
+          <p class="trail-chip">On: <strong id="discovery-form-trail"></strong></p>
+          <h1 class="form-card__title" id="discovery-form-title" tabindex="-1">Add a discovery</h1>
+          <p class="form-card__intro" id="discovery-form-intro"></p>
+
+          <p class="form-alert" id="discovery-form-alert" role="alert" hidden></p>
+
+          <form id="discovery-form" novalidate>
+            <div class="field">
+              <label for="discovery-title-input">Website title <span class="field__tag field__tag--required">Required</span></label>
+              <input id="discovery-title-input" name="title" type="text" maxlength="120" autocomplete="off"
+                     placeholder="e.g. A Tour of the C# Language" aria-describedby="discovery-title-input-error">
+              <p class="field__error" id="discovery-title-input-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label for="discovery-url-input">Website URL <span class="field__tag field__tag--required">Required</span></label>
+              <input id="discovery-url-input" name="url" type="url" autocomplete="off" inputmode="url"
+                     placeholder="https://"
+                     aria-describedby="discovery-url-input-hint discovery-url-input-error">
+              <p class="field__hint" id="discovery-url-input-hint">Copy it from your browser’s address bar. It should start with https://</p>
+              <p class="field__error" id="discovery-url-input-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label for="discovery-note-input">Notes <span class="field__tag">Optional</span></label>
+              <textarea id="discovery-note-input" name="note" rows="4" maxlength="500"
+                        placeholder="Why was this interesting? Where did it lead you next?"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <a class="btn btn--secondary" href="#/" data-cancel="discovery-form">Cancel</a>
+              <button type="submit" class="btn btn--primary" id="discovery-form-submit">Save discovery</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- =====================================================
+       CONFIRM DIALOG
+       Used before anything is deleted or reset.
+       ===================================================== -->
+  <dialog class="dialog confirm" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <span class="confirm__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg>
+    </span>
+    <h2 class="dialog__title" id="confirm-title"></h2>
+    <p class="confirm__message" id="confirm-message"></p>
+    <div class="dialog__actions">
+      <button type="button" class="btn btn--secondary" data-confirm="no">Cancel</button>
+      <button type="button" class="btn btn--danger" data-confirm="yes" id="confirm-yes">Delete</button>
+    </div>
+  </dialog>
+
+
+  <!-- =====================================================
+       SETTINGS
+       A native <dialog>: it keeps focus inside, closes with Esc,
+       and returns focus to the Settings button on its own.
+       ===================================================== -->
+  <dialog class="dialog settings" id="settings" aria-labelledby="settings-title">
+    <div class="settings__header">
+      <h2 class="dialog__title" id="settings-title">Settings</h2>
+      <button type="button" class="icon-button" data-action="close-settings" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="settings__row">
+      <div>
+        <p class="settings__label">Reset sample data</p>
+        <p class="settings__hint">Bring back the four example trails.</p>
+      </div>
+      <button type="button" class="btn btn--secondary btn--small" data-action="reset-data">Reset</button>
+    </div>
+
+    <div class="settings__row">
+      <div>
+        <p class="settings__label">Clear all trails</p>
+        <p class="settings__hint">Remove every trail to see the empty dashboard.</p>
+      </div>
+      <button type="button" class="btn btn--danger-outline btn--small" data-action="clear-trails">Clear all</button>
+    </div>
+  </dialog>
+
+  <!-- Short confirmation messages ("Discovery added") -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Order matters: app.js uses `sampleData` from sample-data.js -->
+  <script src="js/sample-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.log
+
+# Generated build of the archived React app (can be rebuilt from archive/react-vite-version/src)
+archive/react-vite-version/wireframes-build/

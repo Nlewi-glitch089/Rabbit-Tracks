@@ -1,0 +1,439 @@
+/* =========================================================
+   App frame: skip link, header, page, footer, dialogs,
+   toast, and the loading / error / not-found panels.
+   ========================================================= */
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--plum);
+  color: var(--paper);
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+
+/* ---------- Header ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--line);
+  background: rgba(251, 247, 238, 0.92);
+  backdrop-filter: blur(8px);
+  /* thin gold rule under the line */
+  box-shadow: 0 1px 0 rgba(201, 154, 59, 0.28);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: var(--page-width);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 10px var(--gutter);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  margin-left: -4px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.brand__mark {
+  width: 26px;
+  height: 30px;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--plum);
+  font-variation-settings: 'SOFT' 80;
+}
+
+.brand__name em {
+  font-weight: 500;
+  color: var(--purple);
+}
+
+/* The logo door: frame, the light behind it, and the door itself */
+.door-mark__frame { fill: var(--purple); }
+.door-mark__light { fill: var(--gold-soft); }
+.door-mark__leaf { fill: var(--plum); }
+.door-mark__keyhole { fill: var(--gold-bright); }
+
+.door-leaf {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+/* A small reward for the curious: the door opens on hover */
+.brand:hover .door-leaf,
+.brand:focus-visible .door-leaf {
+  transform: scaleX(0.55) skewY(-6deg);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-nav__link {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ink-2);
+}
+
+.site-nav__link:hover {
+  background: var(--lavender-mist);
+  color: var(--purple);
+}
+
+.site-nav__link[aria-current='page'] {
+  color: var(--plum);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+
+.site-nav .btn {
+  margin-left: 6px;
+}
+
+
+/* ---------- Page + footer ---------- */
+
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 72px;
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  max-width: var(--page-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 22px var(--gutter) 28px;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.site-footer__brand {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 28px 0 18px;
+  padding: 4px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--purple);
+}
+
+.back-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.section-heading {
+  margin-bottom: 18px;
+  font-size: 1.35rem;
+}
+
+
+/* ---------- Dialogs (Settings + confirm) ---------- */
+
+.sheet {
+  width: min(460px, calc(100% - 32px));
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--shadow-2);
+  color: var(--ink);
+}
+
+.sheet::backdrop {
+  background: rgba(42, 22, 64, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 14px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sheet__title {
+  font-size: 1.4rem;
+}
+
+.settings__note {
+  padding: 16px 24px 4px;
+  font-size: 0.875rem;
+  color: var(--ink-3);
+}
+
+.settings__list {
+  margin: 0;
+  padding: 4px 24px 18px;
+  list-style: none;
+}
+
+.settings__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 14px 0;
+}
+
+.settings__row + .settings__row {
+  border-top: 1px dashed var(--line-strong);
+}
+
+.settings__row > div {
+  flex: 1 1 220px;
+}
+
+.settings__label {
+  font-weight: 600;
+}
+
+.settings__hint {
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.confirm {
+  border-top: 4px solid var(--danger);
+}
+
+.confirm__body {
+  display: flex;
+  gap: 16px;
+  padding: 24px 24px 8px;
+}
+
+.confirm__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.confirm__icon--neutral {
+  background: var(--lavender-soft);
+  color: var(--purple);
+}
+
+.confirm:has(.confirm__icon--neutral) {
+  border-top-color: var(--purple);
+}
+
+.confirm__title {
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.confirm__message {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+
+.confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 24px 24px;
+}
+
+
+/* ---------- Toast ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  max-width: calc(100% - 32px);
+  padding: 12px 18px;
+  border-left: 3px solid var(--gold-bright);
+  border-radius: 10px;
+  background: var(--plum);
+  box-shadow: var(--shadow-2);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast--error {
+  border-left-color: #f08ea0;
+}
+
+
+/* ---------- Loading / error / not found ---------- */
+
+.status {
+  max-width: 460px;
+  margin: 72px auto 0;
+  text-align: center;
+}
+
+.status__art {
+  width: 220px;
+  margin: 0 auto 18px;
+}
+
+.status .eyebrow {
+  margin-bottom: 6px;
+}
+
+.status__title {
+  font-size: 1.9rem;
+}
+
+.status__message {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.status__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.status--loading .status__title {
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+/* Door scene drawing */
+.ds-ground { fill: var(--lavender-soft); }
+.ds-light { fill: var(--gold-soft); }
+.ds-path { fill: none; stroke: var(--violet); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 0.1 8; }
+.ds-frame { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+.ds-opening { fill: var(--plum); }
+.ds-leaf { fill: var(--paper); stroke: var(--purple); stroke-width: 2; stroke-linejoin: round; }
+.ds-knob { fill: var(--gold); }
+.ds-spark { fill: var(--gold-bright); }
+.ds-spark--small { fill: var(--lavender); }
+
+.door-scene--closed .ds-light { opacity: 0; }
+.door-scene--error .ds-light { fill: var(--danger-soft); }
+
+.door-scene--loading .ds-light {
+  animation: door-glow 1.4s ease-in-out infinite;
+}
+
+.door-scene--loading .ds-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: twinkle 1.4s ease-in-out infinite;
+}
+
+@keyframes door-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@keyframes twinkle {
+  0%, 100% { transform: scale(0.7); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .site-header__inner {
+    min-height: 60px;
+    gap: 8px;
+  }
+
+  .brand__name {
+    font-size: 1.25rem;
+  }
+
+  .site-nav__link {
+    display: none;
+  }
+
+  .confirm__actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirm__actions .btn {
+    width: 100%;
+  }
+
+  .status {
+    margin-top: 40px;
+  }
+}

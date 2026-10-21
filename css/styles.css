@@ -1,0 +1,1926 @@
+/* =========================================================
+   Rabbit Trails — styles
+   "A modern curiosity journal with a subtle Wonderland atmosphere."
+   Plum, parchment, lavender, and a little gold. Playfair Display
+   for headings and questions, Inter for everything else. The trail
+   of dots and the hole it leads into are the only decorations.
+
+   1.  Design tokens
+   2.  Base
+   3.  Shared pieces (surface, eyebrow, monogram, trail art, hole)
+   4.  Buttons
+   5.  Header
+   6.  Screens + page heading
+   7.  Dashboard: "Continue" panel
+   8.  Dashboard: trail list
+   9.  Dashboard: recent discoveries
+   10. Empty + status screens
+   11. Trail header
+   12. Timeline
+   13. Forms
+   14. Dialogs (confirm + settings)
+   15. Toast
+   16. Responsive
+   17. Reduced motion
+   ========================================================= */
+
+
+/* ---------- 1. Design tokens ---------- */
+:root {
+  /* Plum and purple */
+  --plum-950: #1d0d30;
+  --plum-900: #2a1442;       /* header, "Continue" panel, the question */
+  --plum-800: #3a1f5c;       /* headings */
+  --plum-700: #4a2672;
+  --purple-600: #6b3fa0;     /* actions, links */
+  --purple-500: #8a63c7;     /* focus ring, dotted path */
+
+  /* Lavender */
+  --lavender-300: #c9b3e6;
+  --lavender-200: #ddd0f1;
+  --lavender-100: #efe7f8;
+  --lavender-50: #f8f4fc;
+
+  /* Parchment and cream */
+  --parchment: #f7efe2;      /* page background */
+  --cream: #fffcf7;          /* surfaces */
+  --line: #ebdfcb;
+  --line-strong: #dccbb0;
+
+  /* Gold, used sparingly */
+  --gold-500: #d6a84f;
+  --gold-600: #b88a33;
+  --gold-100: #f8ecd0;
+  --gold-ink: #7a5a17;       /* gold text on light backgrounds */
+
+  /* Text */
+  --ink: #231a2b;
+  --ink-soft: #554a5c;
+  --ink-faint: #6b6070;
+
+  /* Feedback */
+  --red: #b02e3e;
+  --red-dark: #8f2332;
+  --red-tint: #fbe8eb;
+
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 2px rgba(42, 20, 66, 0.05), 0 2px 8px -4px rgba(42, 20, 66, 0.12);
+  --shadow-md: 0 1px 2px rgba(42, 20, 66, 0.05), 0 12px 28px -14px rgba(42, 20, 66, 0.28);
+  --shadow-lg: 0 24px 60px -20px rgba(29, 13, 48, 0.45);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --page-width: 1160px;
+  --gutter: 40px;
+}
+
+
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--parchment);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--plum-800);
+}
+
+/* Playfair's default numerals sit below the line ("old-style"); counts,
+   stats, and step numbers read better with full-height digits */
+h1, h2, h3,
+.monogram,
+.trail-row__count strong,
+.trail-stats dd,
+.timeline__marker,
+.continue__step-number {
+  font-variant-numeric: lining-nums;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--purple-600);
+}
+
+/* One consistent keyboard focus ring */
+:focus-visible {
+  outline: 3px solid var(--purple-500);
+  outline-offset: 2px;
+}
+
+/* Headings and <main> receive focus when a screen opens; no ring needed for that */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Hidden on screen, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--plum-900);
+  color: #fff;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+.page {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 44px var(--gutter) 96px;
+}
+
+
+/* ---------- 3. Shared pieces ---------- */
+
+/* A raised surface: used for the trail list, forms, discoveries, dialogs */
+.surface {
+  border-radius: var(--radius-lg);
+  background: var(--cream);
+  box-shadow: var(--shadow-md);
+}
+
+/* Small label above a heading */
+.eyebrow {
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.section-heading {
+  margin-bottom: 14px;
+  font-size: 1.3rem;
+}
+
+/* A trail's monogram: its first letter on its accent color.
+   app.js gives each trail one of four accents, picked from its id,
+   so a trail keeps the same color everywhere. */
+.accent-0 { --accent: var(--plum-700); --accent-ink: #fff; --accent-line: var(--plum-700); }
+.accent-1 { --accent: var(--purple-600); --accent-ink: #fff; --accent-line: var(--purple-600); }
+.accent-2 { --accent: #f1d79b; --accent-ink: #4a3410; --accent-line: var(--gold-600); }
+.accent-3 { --accent: var(--lavender-200); --accent-ink: var(--plum-800); --accent-line: var(--purple-500); }
+
+.monogram {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius);
+  background: var(--accent, var(--plum-700));
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--accent-ink, #fff);
+}
+
+.monogram--large {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  font-size: 2.1rem;
+}
+
+/* The rabbit hole: a dark ellipse with a gold rim. Size is set where it's used. */
+.hole {
+  display: block;
+  border-radius: 50%;
+  background: var(--plum-950);
+  box-shadow: 0 0 0 2px var(--gold-500);
+}
+
+/* Small drawing for empty and status screens: a dotted trail into the hole */
+.trail-art {
+  display: block;
+  width: 220px;
+  height: auto;
+  margin: 0 auto 26px;
+}
+
+.trail-art__path {
+  fill: none;
+  stroke: var(--purple-500);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0 8;
+}
+
+.trail-art__start { fill: var(--plum-800); }
+.trail-art__rim { fill: var(--gold-500); }
+.trail-art__hole { fill: var(--plum-950); }
+
+/* "Latest" label */
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--gold-100);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+/* Little row of dots: the question, then one per discovery */
+.mini-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-path ol {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mini-path li {
+  display: flex;
+  align-items: center;
+}
+
+.mini-path li::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--accent-line, var(--purple-600));
+  border-radius: 50%;
+  background: var(--cream);
+}
+
+.mini-path li + li::before {
+  content: '';
+  width: 12px;
+  border-top: 2px dotted var(--lavender-300);
+}
+
+.mini-path li:first-child::after {
+  border-color: var(--plum-800);
+  background: var(--plum-800);
+}
+
+.mini-path li:last-child:not(:first-child)::after {
+  border-color: var(--gold-600);
+  background: var(--gold-500);
+}
+
+.mini-path__more {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+
+/* ---------- 4. Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.18s var(--ease), border-color 0.18s, color 0.18s,
+    box-shadow 0.18s, transform 0.18s var(--ease);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* While a form is saving */
+.btn:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.btn--primary {
+  background: var(--purple-600);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(42, 20, 66, 0.2), 0 6px 16px -8px rgba(107, 63, 160, 0.7);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--plum-700);
+  transform: translateY(-1px);
+}
+
+/* Gold: for dark backgrounds (header, "Continue" panel) */
+.btn--gold {
+  background: var(--gold-500);
+  color: var(--plum-950);
+}
+
+.btn--gold:hover {
+  background: #e3b862;
+  transform: translateY(-1px);
+}
+
+/* Quiet outlined button (Cancel, Reset) */
+.btn--secondary {
+  border-color: var(--line-strong);
+  background: var(--cream);
+  color: var(--plum-800);
+}
+
+.btn--secondary:hover {
+  border-color: var(--lavender-300);
+  background: var(--lavender-50);
+}
+
+/* Outlined button on a dark background */
+.btn--on-dark {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+}
+
+.btn--on-dark:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn--danger {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn--danger:hover {
+  background: var(--red-dark);
+}
+
+.btn--danger-outline {
+  border-color: var(--red);
+  background: var(--cream);
+  color: var(--red);
+}
+
+.btn--danger-outline:hover {
+  background: var(--red-tint);
+}
+
+.btn--small {
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+
+/* Text-only buttons for row actions (Edit, Delete) */
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--purple-600);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.text-button:hover {
+  background: var(--lavender-100);
+  color: var(--plum-800);
+}
+
+.text-button--danger {
+  color: var(--red);
+}
+
+.text-button--danger:hover {
+  background: var(--red-tint);
+  color: var(--red-dark);
+}
+
+/* Square icon-only button (close) */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-faint);
+}
+
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-button:hover {
+  background: var(--lavender-100);
+  color: var(--plum-800);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--purple-600);
+}
+
+.back-link:hover {
+  color: var(--plum-800);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+
+/* ---------- 5. Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--plum-900);
+  box-shadow: inset 0 -1px 0 rgba(214, 168, 79, 0.45);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: var(--page-width);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 10px var(--gutter);
+}
+
+.site-header :focus-visible {
+  outline-color: var(--gold-500);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+  margin-left: -4px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: #fff;
+}
+
+.logo__mark {
+  width: 40px;
+  height: 28px;
+}
+
+.logo__print { fill: var(--gold-500); }
+.logo__rim { fill: var(--purple-600); stroke: var(--gold-500); stroke-width: 1.2; }
+.logo__hole { fill: var(--plum-950); }
+
+.logo__text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.logo__accent {
+  color: var(--gold-500);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* "My trails" (hidden on phones, see Responsive) */
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--lavender-200);
+  transition: color 0.15s, box-shadow 0.15s;
+}
+
+.site-nav__link:hover {
+  color: #fff;
+}
+
+/* The page you're on */
+.site-nav__link[aria-current="page"] {
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--gold-500);
+}
+
+.settings-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.settings-button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--gold-500);
+}
+
+.settings-button:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ---------- 6. Screens + page heading ---------- */
+.screen {
+  display: none;
+}
+
+.screen.is-active {
+  display: block;
+  animation: screen-in 0.28s var(--ease);
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dash-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: clamp(2.4rem, 4.4vw, 3.3rem);
+  letter-spacing: -0.015em;
+  color: var(--plum-900);
+}
+
+.dash-head__meta {
+  padding-bottom: 8px;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- 7. Dashboard: "Continue" panel ----------
+   The most recently updated trail, so picking up where you left off
+   is one click away. */
+.continue {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 40px;
+  margin-bottom: 52px;
+  padding: 38px 40px;
+  border-radius: 24px;
+  background: var(--plum-900);
+  box-shadow: var(--shadow-lg);
+  color: #fff;
+}
+
+.continue[hidden] {
+  display: none;
+}
+
+.continue :focus-visible {
+  outline-color: var(--gold-500);
+}
+
+.continue .eyebrow {
+  color: var(--gold-500);
+}
+
+/* A thin light ring so a plum monogram stays visible on the plum panel */
+.continue .monogram {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+}
+
+.continue__heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.continue__title {
+  font-size: clamp(1.7rem, 2.8vw, 2.2rem);
+  color: #fff;
+}
+
+.continue__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.continue__title a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--gold-500);
+  text-underline-offset: 6px;
+}
+
+.continue__question {
+  margin: 14px 0 28px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: var(--lavender-200);
+}
+
+.continue__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* The trail's latest steps, in order */
+.continue__steps {
+  align-self: center;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.continue__steps-label {
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lavender-300);
+}
+
+.continue__step-list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Dotted line joining the step numbers */
+.continue__step-list::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 14px;
+  border-left: 2px dotted rgba(201, 179, 230, 0.5);
+}
+
+.continue__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 14px;
+  padding: 9px 0;
+}
+
+.continue__step-number {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--lavender-300);
+  border-radius: 50%;
+  background: var(--plum-900);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--lavender-200);
+}
+
+.continue__step--latest .continue__step-number {
+  border-color: var(--gold-500);
+  background: var(--gold-500);
+  color: var(--plum-950);
+}
+
+.continue__step-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.continue__step-meta {
+  font-size: 0.8rem;
+  color: var(--lavender-300);
+}
+
+.continue__empty {
+  color: var(--lavender-200);
+}
+
+
+/* ---------- 8. Dashboard: trail list ---------- */
+.dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 48px;
+  align-items: start;
+}
+
+.dash-grid[hidden] {
+  display: none;
+}
+
+.trail-list {
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+}
+
+.trail-list[hidden] {
+  display: none;
+}
+
+.trail-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding: 18px 18px 16px;
+  border-radius: var(--radius);
+  transition: background-color 0.18s var(--ease);
+}
+
+/* Hairline between rows (hidden next to the row you're pointing at) */
+.trail-row + .trail-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 88px;
+  right: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.trail-row:hover,
+.trail-row:focus-within {
+  background: var(--lavender-50);
+}
+
+.trail-row:hover::before,
+.trail-row:hover + .trail-row::before,
+.trail-row:focus-within::before,
+.trail-row:focus-within + .trail-row::before {
+  border-color: transparent;
+}
+
+.trail-row__main {
+  min-width: 0;
+}
+
+.trail-row__title {
+  font-size: 1.28rem;
+  overflow-wrap: anywhere;
+}
+
+/* The title link covers the whole row, so clicking anywhere opens the trail */
+.trail-row__open {
+  color: inherit;
+  text-decoration: none;
+}
+
+.trail-row__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+}
+
+.trail-row__open:focus-visible {
+  outline: none;
+}
+
+.trail-row__open:focus-visible::after {
+  outline: 3px solid var(--purple-500);
+  outline-offset: -2px;
+}
+
+.trail-row__question {
+  margin-top: 3px;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--purple-600);
+}
+
+.trail-row__progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  min-width: 0;
+}
+
+.trail-row__latest {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trail-row__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.trail-row__count {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.trail-row__count strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--plum-800);
+}
+
+.trail-row__meta {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+/* Edit/Delete sit above the row's click area */
+.trail-row__actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin: 6px -10px 0 0;
+}
+
+
+/* ---------- 9. Dashboard: recent discoveries ----------
+   The newest discoveries across every trail, as a small dotted trail. */
+.recent-list {
+  position: relative;
+  margin: 0;
+  padding: 4px 0 0;
+  list-style: none;
+}
+
+.recent-list::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 18px;
+  left: 6px;
+  border-left: 2px dotted var(--lavender-300);
+}
+
+.recent-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.recent-item__dot {
+  width: 14px;
+  height: 14px;
+  margin-top: 5px;
+  border: 3px solid var(--parchment);
+  border-radius: 50%;
+  background: var(--accent-line, var(--purple-600));
+  box-shadow: 0 0 0 1px var(--accent-line, var(--purple-600));
+}
+
+.recent-item__title {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  color: var(--plum-800);
+  overflow-wrap: anywhere;
+}
+
+.recent-item__title:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--gold-500);
+  text-underline-offset: 4px;
+}
+
+.recent-item__meta {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.recent-item__trail {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+/* Trails exist, but none have discoveries yet */
+.recent-item__none {
+  padding-left: 30px;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
+
+/* ---------- 10. Empty + status screens ---------- */
+.empty-state,
+.status {
+  max-width: 520px;
+  margin: 12px auto 0;
+  padding: 48px 36px 44px;
+  text-align: center;
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.empty-state h2,
+.status__title {
+  font-size: 1.75rem;
+}
+
+.empty-state p {
+  margin: 10px auto 26px;
+  max-width: 38ch;
+  color: var(--ink-soft);
+}
+
+.status {
+  margin-top: 48px;
+}
+
+.status__message {
+  margin-top: 10px;
+  color: var(--ink-soft);
+}
+
+.status__message:empty,
+.status__actions:empty {
+  display: none;
+}
+
+.status__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.status--loading .status__title {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.status--loading .trail-art__path {
+  animation: trail-walk 1.2s linear infinite;
+}
+
+@keyframes trail-walk {
+  to { stroke-dashoffset: -16; }
+}
+
+.status--error .trail-art__rim {
+  fill: var(--red);
+}
+
+
+/* ---------- 11. Trail header ---------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  font-size: 0.92rem;
+  min-width: 0;
+}
+
+/* "My trails / Exploring Game Development" */
+.breadcrumb__current {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breadcrumb__current::before {
+  content: '/';
+  margin-right: 10px;
+  color: var(--line-strong);
+}
+
+.trail-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.trail-header__title {
+  font-size: clamp(2.1rem, 3.8vw, 2.9rem);
+  letter-spacing: -0.012em;
+  color: var(--plum-900);
+  overflow-wrap: anywhere;
+}
+
+.trail-header__description {
+  max-width: 64ch;
+  margin-top: 10px;
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+}
+
+.trail-header__description:empty {
+  display: none;
+}
+
+.trail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 36px;
+  margin: 22px 0 0;
+}
+
+.trail-stats dt {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.trail-stats dd {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--plum-800);
+}
+
+.trail-header__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 210px;
+}
+
+.trail-header__manage {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+/* ---------- 12. Timeline ----------
+   Each <li> has a round marker on the left. A dotted, gently winding
+   line runs from each marker down to the next one. The question is
+   the first stop; the last stop is the hole and "Where did you go next?" */
+.journey {
+  max-width: 800px;
+  margin: 40px auto 0;
+}
+
+.timeline {
+  --marker: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline > li {
+  position: relative;
+  padding: 0 0 26px calc(var(--marker) + 26px);
+}
+
+.timeline > li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--marker) / 2 - 8px);
+  top: calc(var(--marker) + 10px);
+  bottom: 4px;
+  width: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='52'%3E%3Cpath d='M8 0 C15 9 15 17 8 26 S1 43 8 52' fill='none' stroke='%23a98bd6' stroke-width='2.6' stroke-linecap='round' stroke-dasharray='0 7'/%3E%3C/svg%3E") repeat-y center top;
+}
+
+.timeline__marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--marker);
+  height: var(--marker);
+  border: 2px solid var(--purple-600);
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 5px var(--parchment);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--purple-600);
+}
+
+/* Time between two steps, e.g. "2 days later" */
+.timeline__gap {
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Start: the question */
+.timeline__start .timeline__marker {
+  border-color: var(--plum-900);
+  background: var(--plum-900);
+  color: var(--gold-500);
+}
+
+.question-panel {
+  padding: 26px 30px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--plum-900);
+  box-shadow: var(--shadow-md);
+  color: #fff;
+}
+
+.question-panel__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lavender-300);
+}
+
+.question-panel__text {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+/* One discovery */
+.discovery {
+  padding: 20px 24px 14px;
+  border-radius: 18px;
+  background: var(--cream);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: anywhere;
+  transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.discovery:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.discovery__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+/* First letter of the website, standing in for its icon */
+.site-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--lavender-100);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--purple-600);
+}
+
+.discovery__date {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.discovery__title {
+  margin: 10px 0 6px;
+  font-size: 1.32rem;
+  color: var(--plum-900);
+}
+
+.discovery__note {
+  color: var(--ink-soft);
+}
+
+.discovery__note--empty {
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.discovery__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.discovery__visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--purple-600);
+}
+
+.discovery__visit:hover {
+  color: var(--plum-800);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.discovery__visit svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* The newest discovery */
+.timeline__item--latest .discovery {
+  box-shadow: 0 0 0 1.5px var(--gold-500), var(--shadow-md);
+}
+
+.timeline__item--latest .timeline__marker {
+  border-color: var(--gold-500);
+  background: var(--purple-600);
+  color: #fff;
+}
+
+/* End: the trail leads into the hole */
+.timeline__end {
+  padding-bottom: 0;
+}
+
+.timeline__end .timeline__marker {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.timeline__end .hole {
+  width: 38px;
+  height: 15px;
+}
+
+.timeline__add {
+  display: block;
+  padding: 18px 24px;
+  border: 1.5px dashed var(--lavender-300);
+  border-radius: 18px;
+  text-decoration: none;
+  transition: border-color 0.18s, background-color 0.18s;
+}
+
+.timeline__add:hover {
+  border-color: var(--purple-500);
+  background: var(--lavender-50);
+}
+
+.timeline__add strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--purple-600);
+}
+
+.timeline__add span {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- 13. Forms ---------- */
+.form-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.form-page > .back-link {
+  margin-bottom: 18px;
+}
+
+.form-card {
+  padding: 40px 44px 36px;
+}
+
+.form-card__title {
+  font-size: clamp(1.8rem, 3vw, 2.2rem);
+  color: var(--plum-900);
+}
+
+.form-card__intro {
+  margin: 8px 0 30px;
+  color: var(--ink-soft);
+}
+
+/* "On: Exploring Game Development" */
+.trail-chip {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--lavender-100);
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trail-chip strong {
+  color: var(--plum-800);
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.93rem;
+  font-weight: 600;
+}
+
+.field__tag {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.field__tag--required {
+  color: var(--purple-600);
+}
+
+.field input,
+.field textarea {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 12px;
+  background: #fff;
+  line-height: 1.45;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+/* The question is written like a question */
+.field input.field__question {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.12rem;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #978b98;
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--lavender-300);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--purple-500);
+  box-shadow: 0 0 0 4px rgba(138, 99, 199, 0.2);
+}
+
+.field__hint {
+  margin-top: 7px;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+/* Validation feedback */
+.field input[aria-invalid="true"] {
+  border-color: var(--red);
+  background: #fffafa;
+}
+
+.field input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 4px rgba(176, 46, 62, 0.16);
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.87rem;
+  font-weight: 500;
+  color: var(--red);
+}
+
+.field__error::before {
+  content: '!';
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--red);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.field__error[hidden] {
+  display: none;
+}
+
+/* Shown above a form when saving fails */
+.form-alert {
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--red-tint);
+  box-shadow: inset 4px 0 0 var(--red);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--red-dark);
+}
+
+.form-alert[hidden] {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 34px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+
+/* ---------- 14. Dialogs ----------
+   Native <dialog>s opened with showModal() in app.js. */
+.dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 28px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--cream);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+}
+
+.dialog[open] {
+  animation: dialog-in 0.22s var(--ease);
+}
+
+.dialog::backdrop {
+  background: rgba(29, 13, 48, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+/* Slide only, no fade: if an animation ever stalls, the dialog is still fully visible */
+@keyframes dialog-in {
+  from { transform: translateY(8px) scale(0.98); }
+  to   { transform: none; }
+}
+
+.dialog__title {
+  font-size: 1.4rem;
+  overflow-wrap: anywhere;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.confirm__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: var(--red-tint);
+  color: var(--red);
+}
+
+.confirm__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.confirm__message {
+  margin-top: 8px;
+  color: var(--ink-soft);
+}
+
+.settings__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -6px -8px 10px 0;
+}
+
+.settings__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+.settings__row > div {
+  flex: 1 1 220px;
+}
+
+.settings__row:last-child {
+  padding-bottom: 0;
+}
+
+.settings__label {
+  font-weight: 600;
+}
+
+.settings__hint {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+}
+
+
+/* ---------- 15. Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 50;
+  max-width: calc(100% - 32px);
+  padding: 13px 20px;
+  border-radius: 12px;
+  background: var(--plum-900);
+  box-shadow: inset 3px 0 0 var(--gold-500), var(--shadow-lg);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+/* ---------- 16. Responsive ---------- */
+
+/* Tablet: recent discoveries move below the trail list; the "Continue" panel stacks */
+@media (max-width: 1000px) {
+  .dash-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .continue {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .continue__steps {
+    align-self: stretch;
+  }
+}
+
+/* Smaller tablets: trail header actions go under the title */
+@media (max-width: 780px) {
+  .trail-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .trail-header__actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .trail-header__manage {
+    gap: 4px;
+  }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .page {
+    padding-top: 28px;
+  }
+
+  .site-header__inner {
+    min-height: 60px;
+    gap: 8px;
+  }
+
+  .site-nav {
+    gap: 8px;
+  }
+
+  .site-nav__link {
+    display: none;
+  }
+
+  .logo__mark {
+    width: 32px;
+    height: 22px;
+  }
+
+  .logo__text {
+    font-size: 1.18rem;
+  }
+
+  /* Icon-only Settings button; the label is still read by screen readers */
+  .settings-button {
+    padding: 0 10px;
+  }
+
+  .settings-button__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .dash-head {
+    margin-bottom: 22px;
+  }
+
+  .continue {
+    margin-bottom: 40px;
+    padding: 26px 22px;
+    border-radius: 20px;
+  }
+
+  .continue__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .trail-list {
+    padding: 4px;
+  }
+
+  /* Row: monogram + text; count and actions underneath */
+  .trail-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px 14px 12px;
+  }
+
+  .trail-row + .trail-row::before {
+    left: 14px;
+    right: 14px;
+  }
+
+  .monogram {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+
+  .trail-row__side {
+    grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 12px;
+    text-align: left;
+  }
+
+  .trail-row__count strong {
+    display: inline;
+    font-size: 1rem;
+  }
+
+  .trail-row__actions {
+    margin: 0 0 0 auto;
+  }
+
+  .trail-header {
+    gap: 16px;
+  }
+
+  .monogram--large {
+    width: 52px;
+    height: 52px;
+    font-size: 1.6rem;
+  }
+
+  .trail-header__actions > .btn {
+    flex: 1 1 100%;
+  }
+
+  .trail-stats {
+    gap: 10px 24px;
+  }
+
+  .form-card {
+    padding: 28px 20px 24px;
+  }
+
+  .form-actions,
+  .dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn,
+  .dialog__actions .btn {
+    width: 100%;
+  }
+
+  .dialog {
+    padding: 24px 20px;
+  }
+
+  .timeline {
+    --marker: 32px;
+  }
+
+  .timeline > li {
+    padding-left: calc(var(--marker) + 14px);
+  }
+
+  .timeline__marker {
+    font-size: 0.88rem;
+    box-shadow: 0 0 0 4px var(--parchment);
+  }
+
+  .timeline__end .hole {
+    width: 30px;
+    height: 12px;
+  }
+
+  .question-panel {
+    padding: 20px 20px 22px;
+  }
+
+  .discovery {
+    padding: 16px 16px 10px;
+  }
+
+  .discovery__title {
+    font-size: 1.14rem;
+  }
+
+  .empty-state,
+  .status {
+    padding: 36px 22px;
+  }
+}
+
+
+/* ---------- 17. Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

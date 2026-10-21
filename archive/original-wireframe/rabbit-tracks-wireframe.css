@@ -1,0 +1,1800 @@
+/* =========================================================
+   Rabbit Hole Trails — wireframe styles
+   Shares its look with the original Rabbit Hole wireframe:
+   purple + parchment, Playfair Display headings, playing-card
+   details (corner indexes, suits, a thin gold frame) and the hole.
+
+   1.  Design tokens (colors, fonts, shadows)
+   2.  Base + shared helpers
+   3.  Small decorations (suits, the hole, rabbit prints, card corners)
+   4.  Buttons
+   5.  Prototype bar + header
+   6.  Screens
+   7.  Dashboard
+   8.  Forms (trail + discovery)
+   9.  Trail details
+   10. Timeline
+   11. Settings
+   12. Toast
+   13. Responsive (tablet + mobile)
+   14. Reduced motion
+   ========================================================= */
+
+
+/* ---------- 1. Design tokens ----------
+   Colors match the original wireframe (wireframe/wireframe.css). */
+:root {
+  --purple: #6b3fa0;
+  --purple-dark: #57328a;
+  --deep-purple: #321b4d;
+  --night: #1f1030;          /* darkest plum, used inside the hole */
+  --lavender: #c9b3e6;
+  --lavender-tint: #efe6f6;
+
+  --parchment: #f6ebd8;
+  --card-white: #fffdf7;
+  --card-edge: #e6d9c2;
+  --line: #d9c7a6;
+
+  --gold: #d6a84f;
+  --gold-dark: #a07a2e;
+  --gold-tint: #f7e8c4;
+  --red: #b52b3a;
+  --red-tint: #f8e3e5;
+
+  --ink: #241b29;
+  --ink-soft: #5c4f60;
+  --ink-faint: #6e6170;      /* darker than the original so small text passes contrast */
+
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  --radius: 12px;
+  --radius-small: 6px;
+  --shadow-card: 0 1px 0 rgba(36, 27, 41, 0.06), 0 2px 4px rgba(36, 27, 41, 0.06),
+    0 8px 18px -8px rgba(50, 27, 77, 0.25);
+  --shadow-lifted: 0 2px 0 rgba(36, 27, 41, 0.05), 0 6px 10px rgba(36, 27, 41, 0.08),
+    0 22px 34px -14px rgba(50, 27, 77, 0.38);
+
+  --page-width: 1120px;
+  --gutter: 32px;
+}
+
+
+/* ---------- 2. Base + shared helpers ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--parchment);
+  /* faint dotted paper texture, same as the original */
+  background-image: radial-gradient(rgba(107, 63, 160, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(214, 168, 79, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px, 31px 31px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--purple);
+}
+
+/* One consistent keyboard focus ring everywhere */
+:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 2px;
+}
+
+/* Headings receive focus when a screen opens; no ring needed for that */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Hidden on screen, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-small);
+  background: var(--deep-purple);
+  color: var(--card-white);
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Small uppercase label above headings */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+.page {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 40px var(--gutter) 96px;
+}
+
+/* Section heading followed by a fading rule: "♣ My trails ────── 4 trails" */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.section-title h2 {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--deep-purple);
+}
+
+.section-title h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  margin-left: 8px;
+  background: linear-gradient(to right, var(--line), transparent);
+}
+
+.section-title h2 .suit {
+  font-size: 1.1rem;
+}
+
+.section-title p {
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+
+.back-link:hover {
+  color: var(--deep-purple);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+
+/* ---------- 3. Small decorations ---------- */
+
+/* Card suits. font-variant-emoji keeps ♥ from turning into an emoji. */
+.suit {
+  display: inline-block;
+  line-height: 1;
+  font-variant-emoji: text;
+}
+
+.suit--red {
+  color: var(--red);
+}
+
+.suit--gold {
+  color: var(--gold);
+}
+
+/* The rabbit hole: a dark ellipse with a thin gold rim. Size is set where it's used. */
+.hole {
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 60%, #12081d 0%, var(--night) 45%, var(--deep-purple) 75%, var(--purple) 100%);
+  box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.45), 0 0 0 2px var(--gold);
+}
+
+/* Rabbit footprints: small gold prints in a zig-zag */
+.prints {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.prints i {
+  display: block;
+  width: 6px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.75;
+}
+
+.prints i:nth-child(even) {
+  margin-left: 9px;
+}
+
+/* Corner index on a playing card: number on top, suit below */
+.card-corner {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--deep-purple);
+  pointer-events: none;
+}
+
+.card-corner .suit {
+  font-size: 0.75rem;
+}
+
+.card-corner--top {
+  top: 12px;
+  left: 12px;
+}
+
+.card-corner--bottom {
+  right: 12px;
+  bottom: 12px;
+  transform: rotate(180deg);
+}
+
+/* Small label, e.g. "Latest" */
+.pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--gold-tint);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #6b4a10;
+}
+
+
+/* ---------- 4. Buttons ----------
+   Same chunky look as the original: a solid "ledge" shadow underneath. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 20px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-small);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn--primary {
+  background: var(--purple);
+  color: var(--card-white);
+  box-shadow: 0 3px 0 var(--deep-purple);
+}
+
+.btn--primary:hover {
+  background: var(--purple-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--deep-purple);
+}
+
+/* Gold button for dark purple surfaces (header, hero) */
+.btn--gold {
+  background: var(--gold);
+  color: var(--deep-purple);
+  box-shadow: 0 3px 0 var(--gold-dark);
+}
+
+.btn--gold:hover {
+  background: #e2b862;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--gold-dark);
+}
+
+/* Outlined button (Cancel, Edit trail, Reset) */
+.btn--ghost,
+.btn--secondary {
+  border-color: var(--deep-purple);
+  background: var(--card-white);
+  color: var(--deep-purple);
+}
+
+.btn--ghost:hover,
+.btn--secondary:hover {
+  background: var(--lavender-tint);
+}
+
+/* Text-only red button (Delete trail) */
+.btn--danger {
+  background: transparent;
+  color: var(--red);
+}
+
+.btn--danger:hover {
+  background: var(--red-tint);
+}
+
+/* Outlined red button (Clear all) */
+.btn--danger-outline {
+  border-color: var(--red);
+  background: var(--card-white);
+  color: var(--red);
+}
+
+.btn--danger-outline:hover {
+  background: var(--red-tint);
+}
+
+.btn--small {
+  min-height: 38px;
+  padding: 7px 14px;
+  font-size: 0.875rem;
+}
+
+.btn--large {
+  min-height: 52px;
+  padding: 14px 26px;
+  font-size: 1rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Small square buttons with only an icon (edit, delete, close).
+   Always visible, so they work on touch screens too. */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--ink-faint);
+}
+
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-button:hover {
+  border-color: var(--card-edge);
+  background: var(--lavender-tint);
+  color: var(--purple);
+}
+
+.icon-button--danger:hover {
+  background: var(--red-tint);
+  color: var(--red);
+}
+
+
+/* ---------- 5. Prototype bar + header ---------- */
+.prototype-bar {
+  padding: 7px var(--gutter);
+  background: var(--lavender-tint);
+  border-bottom: 1px solid var(--lavender);
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--deep-purple);
+}
+
+.prototype-bar .suit {
+  margin-right: 4px;
+  color: var(--purple);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2px solid var(--gold);
+  background: var(--deep-purple);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: var(--page-width);
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 10px var(--gutter);
+}
+
+.site-header :focus-visible {
+  outline-color: var(--gold);
+}
+
+/* Logo: a small hole next to the name, like the original */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--card-white);
+}
+
+.logo__mark {
+  width: 34px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 65%, #160c22 0 32%, var(--deep-purple) 34% 62%, var(--purple) 64%);
+}
+
+.logo__text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.35rem;
+  white-space: nowrap;
+}
+
+.logo__accent {
+  color: var(--gold);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 253, 247, 0.8);
+}
+
+.site-nav__link .suit {
+  font-size: 0.75rem;
+  color: var(--gold);
+}
+
+.site-nav__link:hover {
+  background: rgba(255, 253, 247, 0.08);
+  color: var(--card-white);
+}
+
+.settings-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 253, 247, 0.25);
+  border-radius: var(--radius-small);
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--card-white);
+}
+
+.settings-button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+}
+
+.settings-button:hover {
+  border-color: var(--gold);
+  background: rgba(255, 253, 247, 0.08);
+}
+
+
+/* ---------- 6. Screens ----------
+   Every screen is a <section class="screen">. Only one has "is-active". */
+.screen {
+  display: none;
+}
+
+.screen.is-active {
+  display: block;
+  animation: screen-in 0.25s ease-out;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+/* ---------- 7. Dashboard ---------- */
+
+/* Hero: a deep purple "card" with a thin gold frame */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 56px;
+  padding: 48px 48px 48px 52px;
+  border-radius: 18px;
+  background: var(--deep-purple);
+  /* soft glow behind the hole */
+  background-image: radial-gradient(circle at 78% 80%, rgba(107, 63, 160, 0.55), transparent 55%);
+  color: var(--card-white);
+  box-shadow: var(--shadow-lifted);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(214, 168, 79, 0.35);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.hero :focus-visible {
+  outline-color: var(--gold);
+}
+
+.hero .eyebrow {
+  color: var(--lavender);
+}
+
+.hero__title {
+  margin: 14px 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.hero__title em {
+  display: block;
+  color: var(--gold);
+}
+
+.hero__lead {
+  max-width: 480px;
+  margin-bottom: 30px;
+  font-size: 1.05rem;
+  color: rgba(255, 253, 247, 0.82);
+}
+
+/* Decoration: three cards tumbling toward the hole */
+.hero__visual {
+  position: relative;
+  height: 300px;
+}
+
+.hero-card {
+  --r: 0deg;
+  position: absolute;
+  padding: 18px 16px 16px 34px;
+  border: 1px solid var(--card-edge);
+  border-radius: 10px;
+  background: var(--card-white);
+  box-shadow: var(--shadow-lifted);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+  transform: rotate(var(--r));
+  animation: card-float 6s ease-in-out infinite;
+}
+
+.hero-card__corner {
+  position: absolute;
+  top: 9px;
+  left: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-card__corner .suit {
+  font-size: 0.7rem;
+}
+
+.hero-card--question {
+  --r: -6deg;
+  top: 0;
+  left: 4%;
+  width: 230px;
+  border-color: var(--gold);
+  background: var(--purple);
+  font-size: 1.2rem;
+  color: var(--card-white);
+}
+
+.hero-card--2 {
+  --r: 5deg;
+  top: 104px;
+  left: 50%;
+  width: 165px;
+  animation-delay: -2s;
+}
+
+.hero-card--3 {
+  --r: -3deg;
+  top: 168px;
+  left: 14%;
+  width: 150px;
+  font-size: 0.95rem;
+  opacity: 0.92;
+  animation-delay: -4s;
+}
+
+.hero__prints {
+  position: absolute;
+  top: 116px;
+  left: 30%;
+}
+
+.hero__hole {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 260px;
+  height: 66px;
+  transform: translateX(-50%);
+}
+
+@keyframes card-float {
+  0%, 100% { transform: rotate(var(--r)) translateY(0); }
+  50%      { transform: rotate(calc(var(--r) * 0.6)) translateY(-6px); }
+}
+
+/* Trail cards: playing cards with a printed gold frame and corner indexes */
+.trail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 28px;
+}
+
+.trail-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* extra room on the right/bottom keeps text clear of the corner index */
+  padding: 28px 36px 40px 32px;
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* Thin inner frame, like the printed border on a real card */
+.trail-card::before,
+.discovery-card::before,
+.form-card::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(214, 168, 79, 0.35);
+  border-radius: calc(var(--radius) - 4px);
+  pointer-events: none;
+}
+
+/* Picking up a card: it straightens and lifts */
+.trail-card:hover,
+.trail-card:focus-within {
+  transform: translateY(-5px) rotate(0deg);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-lifted);
+}
+
+.trail-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.trail-card__count {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--lavender-tint);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--purple-dark);
+}
+
+/* Edit/delete sit above the full-card link so they stay clickable */
+.trail-card__controls {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  margin-right: -8px;
+}
+
+.trail-card__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--deep-purple);
+}
+
+/* The title button stretches over the whole card, so clicking anywhere opens it */
+.trail-card__open {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-weight: inherit;
+  color: inherit;
+}
+
+.trail-card__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+}
+
+.trail-card__open:focus-visible {
+  outline: none;
+}
+
+.trail-card__open:focus-visible::after {
+  outline: 3px solid var(--purple);
+  outline-offset: 3px;
+}
+
+.trail-card__question {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--purple);
+}
+
+/* Little row of dots: the question, then one per discovery */
+.trail-card__path {
+  display: flex;
+  align-items: center;
+}
+
+.mini-path {
+  display: flex;
+  align-items: center;
+  margin: 18px 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.mini-path li {
+  display: flex;
+  align-items: center;
+}
+
+.mini-path li + li::before {
+  content: '';
+  width: 16px;
+  border-top: 2px dotted var(--lavender);
+}
+
+.mini-path__dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--purple);
+  border-radius: 50%;
+  background: var(--card-white);
+}
+
+.mini-path li:first-child .mini-path__dot {
+  border-color: var(--deep-purple);
+  background: var(--deep-purple);
+}
+
+.mini-path li:last-child:not(:first-child) .mini-path__dot {
+  border-color: var(--gold-dark);
+  background: var(--gold);
+}
+
+.mini-path__more {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.trail-card__latest {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.trail-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.trail-card__footer span {
+  white-space: nowrap;
+}
+
+.trail-card__latest + .trail-card__footer {
+  margin-top: 16px;
+}
+
+.trail-card__go {
+  font-weight: 600;
+  color: var(--purple);
+}
+
+/* Empty state: a lone card above an empty hole */
+.empty-state {
+  max-width: 520px;
+  margin: 8px auto 0;
+  padding: 44px 32px;
+  border: 2px dashed var(--lavender);
+  border-radius: 18px;
+  background: rgba(255, 253, 247, 0.6);
+  text-align: center;
+}
+
+.empty-state__art {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-state__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 54px;
+  height: 72px;
+  margin-bottom: -12px;
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--deep-purple);
+  transform: rotate(-8deg);
+}
+
+.empty-state__card .suit {
+  font-size: 0.9rem;
+}
+
+.empty-state .hole {
+  width: 150px;
+  height: 36px;
+}
+
+.empty-state h3 {
+  margin: 24px 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--deep-purple);
+}
+
+.empty-state p {
+  margin-bottom: 24px;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- 8. Forms (trail + discovery) ---------- */
+.form-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.form-card {
+  position: relative;
+  padding: 40px;
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+}
+
+.form-card__title {
+  margin: 10px 0 8px;
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--deep-purple);
+}
+
+.form-card__intro {
+  margin-bottom: 28px;
+  color: var(--ink-soft);
+}
+
+/* "♠ Adding to: Exploring Game Development" */
+.trail-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--deep-purple);
+  font-size: 0.85rem;
+  color: var(--lavender);
+  white-space: nowrap;
+}
+
+.trail-chip .suit {
+  color: var(--gold);
+}
+
+.trail-chip strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--card-white);
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.field__tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.field__tag--required {
+  color: var(--purple);
+}
+
+.field input,
+.field textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--card-edge);
+  border-radius: 8px;
+  background: #fff;
+  line-height: 1.4;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #958a96;
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--lavender);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.22);
+}
+
+.field__hint {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+/* Validation feedback */
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: var(--red);
+  background: #fffafa;
+}
+
+.field input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(181, 43, 58, 0.18);
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--red);
+}
+
+.field__error::before {
+  content: '!';
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--red);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.field__error[hidden] {
+  display: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px dashed var(--line);
+}
+
+
+/* ---------- 9. Trail details ---------- */
+.trail-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* Lets long titles and URLs wrap instead of stretching the columns */
+.trail-layout > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Summary card with a deep purple spine, like the original "Continue" card */
+.trail-summary {
+  position: sticky;
+  top: 96px;
+  padding: 30px 28px 26px 34px;
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.trail-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 6px;
+  background: var(--deep-purple);
+}
+
+.trail-summary__title {
+  margin: 10px 0 12px;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--deep-purple);
+}
+
+.trail-summary__description {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.trail-summary__description:empty {
+  display: none;
+}
+
+/* Label on the left, value on the right, one row each */
+.trail-stats {
+  margin: 22px 0;
+  border-top: 1px solid var(--card-edge);
+}
+
+.trail-stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--card-edge);
+  font-size: 0.9rem;
+}
+
+.trail-stats dt {
+  color: var(--ink-faint);
+}
+
+.trail-stats dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.trail-summary__manage {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+
+/* ---------- 10. Timeline ----------
+   Each <li> has a marker on the left shaped like a tiny playing card.
+   A dotted, gently winding line (a repeating SVG image) runs from each
+   marker down to the next one. The last item has no line. */
+.timeline {
+  --marker-w: 38px;
+  --marker-h: 50px;
+  --marker-top: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline > li {
+  position: relative;
+  padding: 0 0 30px calc(var(--marker-w) + 22px);
+}
+
+.timeline > li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--marker-w) / 2 - 8px);
+  top: calc(var(--marker-top) + var(--marker-h));
+  width: 16px;
+  height: calc(100% - var(--marker-h));
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='48'%3E%3Cpath d='M8 0 C16 8 16 16 8 24 S0 40 8 48' fill='none' stroke='%239a78c9' stroke-width='2.2' stroke-linecap='round' stroke-dasharray='0 6'/%3E%3C/svg%3E") repeat-y center top;
+}
+
+/* Small gold diamond between stops */
+.timeline > li:not(:last-child)::after {
+  content: '♦';
+  position: absolute;
+  left: calc(var(--marker-w) / 2);
+  bottom: 4px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--gold);
+  font-variant-emoji: text;
+  transform: translateX(-50%);
+}
+
+.timeline__marker {
+  position: absolute;
+  left: 0;
+  top: var(--marker-top);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: var(--marker-w);
+  height: var(--marker-h);
+  border: 1.5px solid var(--purple);
+  border-radius: var(--radius-small);
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple);
+}
+
+.timeline__marker .suit {
+  font-size: 0.85rem;
+}
+
+/* Start: the question */
+.timeline__start .timeline__marker {
+  border-color: var(--gold);
+  background: var(--deep-purple);
+  font-size: 1.4rem;
+  color: var(--gold);
+}
+
+.timeline__start-card {
+  position: relative;
+  padding: 18px 22px 20px 44px;
+  border-radius: var(--radius);
+  background: var(--deep-purple);
+  box-shadow: var(--shadow-lifted);
+  color: var(--card-white);
+}
+
+.timeline__start-card::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(214, 168, 79, 0.4);
+  border-radius: calc(var(--radius) - 4px);
+  pointer-events: none;
+}
+
+.timeline__start-card .card-corner {
+  color: var(--card-white);
+}
+
+.timeline__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lavender);
+}
+
+.timeline__question {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.timeline__date {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: rgba(255, 253, 247, 0.75);
+}
+
+/* One discovery */
+.discovery-card {
+  position: relative;
+  padding: 20px 24px 22px;
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  background: var(--card-white);
+  box-shadow: var(--shadow-card);
+}
+
+.discovery-card__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.discovery-card__meta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.discovery-card__controls {
+  display: flex;
+  gap: 2px;
+  margin: -6px -10px -6px 0;
+}
+
+.discovery-card__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--deep-purple);
+}
+
+.discovery-card__domain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+/* First letter of the website, standing in for a site icon */
+.site-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: var(--lavender-tint);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--purple);
+  text-transform: uppercase;
+}
+
+.discovery-card__note {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  color: var(--ink-soft);
+}
+
+.discovery-card__note--empty {
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.discovery-card__visit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--purple);
+  text-decoration: underline;
+  text-decoration-color: rgba(107, 63, 160, 0.3);
+  text-underline-offset: 4px;
+}
+
+.discovery-card__visit:hover {
+  text-decoration-color: var(--purple);
+}
+
+.discovery-card__visit svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* The newest discovery is the card on top of the deck */
+.timeline__item--latest .discovery-card {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-lifted);
+}
+
+.timeline__item--latest .timeline__marker {
+  border-color: var(--gold);
+  background: var(--purple);
+  color: var(--card-white);
+}
+
+.timeline__item--latest .timeline__marker .suit {
+  color: var(--gold);
+}
+
+/* End: the trail leads into the hole */
+.timeline__end {
+  padding-bottom: 0;
+}
+
+.timeline__end .timeline__marker {
+  justify-content: flex-start;
+  padding-top: 8px;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.timeline__end .hole {
+  width: 40px;
+  height: 18px;
+}
+
+.timeline__add {
+  display: block;
+  width: 100%;
+  padding: 18px 22px;
+  border: 2px dashed var(--lavender);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 247, 0.5);
+  text-align: left;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.timeline__add:hover {
+  border-color: var(--purple);
+  background: var(--lavender-tint);
+}
+
+.timeline__add strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--purple);
+}
+
+.timeline__add span {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- 11. Settings ----------
+   A native <dialog>, opened with showModal() in the JS file. */
+.settings {
+  width: min(520px, calc(100% - 32px));
+  padding: 0;
+  border: 1px solid var(--card-edge);
+  border-radius: 14px;
+  background: var(--card-white);
+  box-shadow: var(--shadow-lifted);
+  color: var(--ink);
+}
+
+.settings::backdrop {
+  background: rgba(31, 16, 48, 0.6);
+}
+
+.settings__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 18px 24px;
+  border-bottom: 2px solid var(--gold);
+  background: var(--deep-purple);
+  color: var(--card-white);
+}
+
+.settings__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.settings__title .suit {
+  font-size: 1rem;
+  color: var(--gold);
+}
+
+.settings__header .icon-button {
+  color: var(--card-white);
+}
+
+.settings__header .icon-button:hover {
+  border-color: transparent;
+  background: rgba(255, 253, 247, 0.12);
+  color: var(--card-white);
+}
+
+.settings__header :focus-visible {
+  outline-color: var(--gold);
+}
+
+.settings__section {
+  padding: 22px 24px;
+}
+
+.settings__section + .settings__section {
+  border-top: 1px solid var(--card-edge);
+  background: var(--parchment);
+}
+
+.settings__note {
+  margin: 8px 0 6px;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.settings__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 14px 0;
+  border-top: 1px dashed var(--line);
+}
+
+/* Text takes the space; the button only wraps below on very narrow screens */
+.settings__row > div {
+  flex: 1 1 220px;
+}
+
+.settings__row:last-child {
+  padding-bottom: 0;
+}
+
+.settings__label {
+  font-weight: 600;
+}
+
+.settings__hint {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.settings__about {
+  margin: 8px 0 10px;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- 12. Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  max-width: calc(100% - 32px);
+  padding: 12px 20px;
+  border-bottom: 2px solid var(--gold);
+  border-radius: 8px;
+  background: var(--deep-purple);
+  box-shadow: var(--shadow-lifted);
+  font-size: 0.9rem;
+  color: var(--card-white);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+/* ---------- 13. Responsive ---------- */
+
+/* Tablet: hero and trail summary stack */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__visual {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .trail-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .trail-summary {
+    position: static;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .page {
+    padding-top: 24px;
+  }
+
+  .site-header__inner {
+    gap: 8px;
+  }
+
+  .site-nav__link {
+    display: none;
+  }
+
+  .logo__text {
+    font-size: 1.1rem;
+  }
+
+  .logo__mark {
+    width: 28px;
+    height: 17px;
+  }
+
+  /* Icon-only Settings button; the label is still read by screen readers */
+  .settings-button {
+    padding: 7px 9px;
+  }
+
+  .settings-button__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .hero {
+    padding: 32px 24px 28px;
+    margin-bottom: 40px;
+  }
+
+  .hero .btn {
+    width: 100%;
+  }
+
+  .hero__visual {
+    display: none;
+  }
+
+  .section-title p {
+    display: none;
+  }
+
+  .trail-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .trail-card {
+    padding: 26px 34px 38px 30px;
+  }
+
+  .form-card,
+  .trail-summary {
+    padding: 26px 22px;
+  }
+
+  .trail-summary {
+    padding-left: 28px;
+  }
+
+  .form-card__title {
+    font-size: 1.7rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .timeline {
+    --marker-w: 30px;
+    --marker-h: 40px;
+    --marker-top: 14px;
+  }
+
+  .timeline > li {
+    padding-left: calc(var(--marker-w) + 12px);
+  }
+
+  .timeline__marker {
+    font-size: 0.9rem;
+  }
+
+  .timeline__end .hole {
+    width: 30px;
+    height: 14px;
+  }
+
+  .timeline__start-card {
+    padding: 16px 16px 18px 38px;
+  }
+
+  .timeline__question {
+    font-size: 1.2rem;
+  }
+
+  .discovery-card {
+    padding: 16px 16px 18px;
+  }
+
+  .discovery-card__title {
+    font-size: 1.15rem;
+  }
+
+  .settings__section {
+    padding: 20px;
+  }
+}
+
+
+/* ---------- 14. Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
