@@ -1,0 +1,25 @@
+{
+  "name": "rabbit-tracks-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rabbit Tracks API: Express + MongoDB CRUD for trails and discoveries. Also serves the front end.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "preview": "node preview.js",
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js",
+    "seed": "node --env-file-if-exists=.env scripts/seed.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "mongodb": "^7.7.0"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.3.0"
+  }
+}

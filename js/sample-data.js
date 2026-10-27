@@ -1,5 +1,5 @@
 /* =========================================================
-   Rabbit Trails — sample data
+   Rabbit Tracks — sample data
 
    The four example trails, and the functions app.js uses to read
    and change them. Everything is kept in memory, so the examples
@@ -25,6 +25,7 @@ const SAMPLE_TRAILS = [
         id: 'd1', date: '2026-10-03',
         title: 'Game engine — Wikipedia',
         url: 'https://en.wikipedia.org/wiki/Game_engine',
+        highlight: 'Nobody builds a game from scratch. There’s a whole layer underneath doing the hard parts.',
         note: 'Games are built on top of “engines” that handle graphics, physics, and sound so developers don’t start from zero. Unity and Unreal kept coming up as the big ones.',
       },
       {
@@ -43,6 +44,7 @@ const SAMPLE_TRAILS = [
         id: 'd4', date: '2026-10-09',
         title: 'Roll-a-Ball: Create your first game',
         url: 'https://learn.unity.com/project/roll-a-ball',
+        highlight: 'A whole working game in one afternoon. That made it feel possible.',
         note: 'A step-by-step beginner tutorial where you build a tiny game in an afternoon. Bookmarking this to actually do this weekend.',
       },
       {
@@ -93,6 +95,7 @@ const SAMPLE_TRAILS = [
         id: 'd1', date: '2026-09-10',
         title: 'Vera Molnár — Wikipedia',
         url: 'https://en.wikipedia.org/wiki/Vera_Moln%C3%A1r',
+        highlight: 'She was making computer art before computers had screens.',
         note: 'One of the first artists to make art with a computer, starting in 1968, before screens could even show images.',
       },
       {
@@ -142,7 +145,7 @@ const SAMPLE_TRAILS = [
 // Longest allowed text for each field. The form inputs use the same limits.
 const FIELD_LIMITS = {
   trail: { title: 80, question: 140, description: 300 },
-  discovery: { title: 120, url: 2000, note: 500 },
+  discovery: { title: 120, url: 2000, highlight: 200, note: 500 },
 };
 
 
@@ -167,6 +170,13 @@ const sampleData = (() => {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     return `${now.getFullYear()}-${month}-${day}`;
+  }
+
+  // "2026-10-26T14:05:09", for `updated`, so trails changed on the same day still sort newest first
+  function nowStamp() {
+    const now = new Date();
+    const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+    return `${todayISO()}T${time}`;
   }
 
   // Errors look like failed HTTP responses: a message plus a status code
@@ -205,6 +215,8 @@ const sampleData = (() => {
   }
 
   return {
+    source: 'sample',
+
     // Trails
 
     async listTrails() {
@@ -217,7 +229,7 @@ const sampleData = (() => {
 
     async createTrail(data) {
       const fields = validate('trail', data, ['title', 'question']);
-      const trail = { id: newId('trail'), ...fields, created: todayISO(), updated: todayISO(), discoveries: [] };
+      const trail = { id: newId('trail'), ...fields, created: todayISO(), updated: nowStamp(), discoveries: [] };
       trails.push(trail);
       return copyOf(trail);
     },
@@ -225,7 +237,7 @@ const sampleData = (() => {
     async updateTrail(trailId, data) {
       const fields = validate('trail', data, ['title', 'question']);
       const trail = findTrail(trailId);
-      Object.assign(trail, fields, { updated: todayISO() });
+      Object.assign(trail, fields, { updated: nowStamp() });
       return copyOf(trail);
     },
 
@@ -241,7 +253,7 @@ const sampleData = (() => {
       const trail = findTrail(trailId);
       const discovery = { id: newId('d'), date: todayISO(), ...fields };
       trail.discoveries.push(discovery);
-      trail.updated = todayISO();
+      trail.updated = nowStamp();
       return copyOf(discovery);
     },
 
@@ -250,7 +262,7 @@ const sampleData = (() => {
       const trail = findTrail(trailId);
       const discovery = findDiscovery(trail, discoveryId);
       Object.assign(discovery, fields);
-      trail.updated = todayISO();
+      trail.updated = nowStamp();
       return copyOf(discovery);
     },
 
@@ -258,7 +270,7 @@ const sampleData = (() => {
       const trail = findTrail(trailId);
       findDiscovery(trail, discoveryId);
       trail.discoveries = trail.discoveries.filter((d) => d.id !== discoveryId);
-      trail.updated = todayISO();
+      trail.updated = nowStamp();
     },
 
     // Settings

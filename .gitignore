@@ -3,5 +3,21 @@ dist/
 .env
 *.log
 
+# Other local environment files (the template stays tracked)
+.env.*
+!.env.example
+
+# Caches, coverage, and temporary files
+.cache/
+coverage/
+*.tmp
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
 # Generated build of the archived React app (can be rebuilt from archive/react-vite-version/src)
 archive/react-vite-version/wireframes-build/

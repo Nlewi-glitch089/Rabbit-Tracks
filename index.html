@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Rabbit Trails: retrace the path to every discovery.">
-  <title>Rabbit Trails</title>
+  <meta name="description" content="Rabbit Tracks: a research journal for following a question wherever it leads.">
+  <meta name="theme-color" content="#1d0d30">
+  <!-- Where trails come from: "auto" (sample data from disk, the API over http),
+       "sample", or "api". The server fills this in; see server/src/app.js. -->
+  <meta name="rabbit-tracks-data" content="auto">
+  <title>Rabbit Tracks</title>
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -23,23 +27,25 @@
        ===================================================== -->
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="logo" href="#/" aria-label="Rabbit Trails, go to My trails">
-        <!-- Two footprints leading into the hole (same mark as the favicon) -->
-        <svg class="logo__mark" viewBox="0 0 40 28" aria-hidden="true" focusable="false">
-          <circle cx="5" cy="5" r="2.2" class="logo__print"/>
-          <circle cx="11" cy="10" r="2.2" class="logo__print"/>
-          <ellipse cx="25" cy="19" rx="13" ry="7" class="logo__rim"/>
-          <ellipse cx="25" cy="20" rx="8.5" ry="4.2" class="logo__hole"/>
+      <a class="logo" href="#/" aria-label="Rabbit Tracks, go to My trails">
+        <!-- Rabbit tracks leading into the hole (same mark as the favicon) -->
+        <svg class="logo__mark" viewBox="0 0 44 30" aria-hidden="true" focusable="false">
+          <ellipse cx="4" cy="5.5" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="8.6" cy="4" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="11" cy="12" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="15.6" cy="10.5" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="29" cy="21" rx="13.5" ry="7" class="logo__rim"/>
+          <ellipse cx="29" cy="22" rx="9" ry="4.4" class="logo__hole"/>
         </svg>
-        <span class="logo__text">Rabbit <span class="logo__accent">Trails</span></span>
+        <span class="logo__text">Rabbit <span class="logo__accent">Tracks</span></span>
       </a>
 
       <nav class="site-nav" aria-label="Main">
         <a class="site-nav__link" href="#/" id="nav-my-trails">My trails</a>
-        <a class="btn btn--gold btn--small" href="#/trails/new">
+        <a class="btn btn--light btn--small" href="#/trails/new">
           <span aria-hidden="true">+</span> New trail
         </a>
-        <button type="button" class="settings-button" data-action="open-settings" aria-haspopup="dialog">
+        <button type="button" class="settings-button" data-action="open-settings" aria-haspopup="dialog" data-tour="settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
@@ -75,47 +81,158 @@
 
     <!-- =====================================================
          SCREEN 1: DASHBOARD   (#/)
-         Heading → the most recent trail ("Continue") → all trails,
-         with the newest discoveries across every trail alongside.
+         A welcome scene (what you're exploring, and the trail to
+         continue, drawn as its route) → your trails as chapters, with
+         next destination, achievements, and a curiosity nudge alongside
+         → the curiosity cabinet across the bottom (or beside the side
+         column when there are only one or two trails; see app.js).
          ===================================================== -->
     <section class="screen" id="screen-dashboard" aria-labelledby="dashboard-title">
-      <div class="dash-head">
-        <div>
-          <p class="eyebrow">Research journal</p>
+      <header class="welcome">
+        <div class="welcome__text" data-tour="my-trails">
+          <p class="eyebrow eyebrow--on-dark">Your research journal</p>
           <h1 class="page-title" id="dashboard-title" tabindex="-1">My trails</h1>
+          <p class="welcome__lede" id="overview-lede"></p>
+          <p class="welcome__tally" id="overview-stats"></p>
         </div>
-        <p class="dash-head__meta" id="trail-count"></p>
-      </div>
 
-      <!-- The most recently updated trail; filled in by app.js -->
-      <section class="continue" id="continue" aria-labelledby="continue-title" hidden></section>
+        <!-- Night in Wonderland: a trail of tracks over the hills to the rabbit hole,
+             where the White Rabbit checks his watch. The drawing is decoration;
+             the button over the rabbit asks him for a question to explore. -->
+        <div class="welcome__art">
+        <svg class="welcome__scene" viewBox="0 0 480 250" aria-hidden="true" focusable="false">
+          <g class="scene__stars">
+            <path d="M40 34l1.6 4.4 4.4 1.6-4.4 1.6L40 46l-1.6-4.4L34 40l4.4-1.6z"/>
+            <path d="M132 18l1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3-3.3-1.2 3.3-1.2z"/>
+            <path d="M236 52l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z"/>
+            <path d="M318 20l1 2.8 2.8 1-2.8 1-1 2.8-1-2.8-2.8-1 2.8-1z"/>
+            <circle cx="86" cy="70" r="1.6"/><circle cx="182" cy="40" r="1.3"/><circle cx="284" cy="88" r="1.4"/>
+            <circle cx="452" cy="104" r="1.5"/><circle cx="366" cy="64" r="1.2"/><circle cx="20" cy="96" r="1.2"/>
+          </g>
+          <circle class="scene__moon" cx="410" cy="50" r="26"/>
+          <circle class="scene__moon-shade" cx="421" cy="43" r="23"/>
+          <path class="scene__hill scene__hill--far" d="M0 176 C 70 146, 150 150, 230 168 S 380 138, 480 156 V250 H0 Z"/>
+          <path class="scene__hill" d="M0 210 C 100 186, 200 196, 292 204 S 420 190, 480 196 V250 H0 Z"/>
+          <path class="scene__path" d="M18 248 C 70 232, 66 212, 136 208 S 230 214, 290 202"/>
+          <g class="scene__prints">
+            <g transform="translate(62 236) rotate(-58)"><ellipse cx="-3" cy="-2" rx="1.6" ry="2.8"/><ellipse cx="3" cy="2" rx="1.6" ry="2.8"/></g>
+            <g transform="translate(110 211) rotate(-80)"><ellipse cx="-3" cy="-2" rx="1.6" ry="2.8"/><ellipse cx="3" cy="2" rx="1.6" ry="2.8"/></g>
+            <g transform="translate(168 208) rotate(-92)"><ellipse cx="-3" cy="-2" rx="1.6" ry="2.8"/><ellipse cx="3" cy="2" rx="1.6" ry="2.8"/></g>
+            <g transform="translate(226 211) rotate(-100)"><ellipse cx="-3" cy="-2" rx="1.6" ry="2.8"/><ellipse cx="3" cy="2" rx="1.6" ry="2.8"/></g>
+          </g>
+          <g class="scene__mushrooms">
+            <path class="scene__cap" d="M410 214 c0-13 10-22 22-22 s22 9 22 22 z"/>
+            <rect class="scene__stem" x="426" y="214" width="12" height="18" rx="4"/>
+            <circle class="scene__spot" cx="424" cy="203" r="2.6"/><circle class="scene__spot" cx="438" cy="198" r="2.2"/><circle class="scene__spot" cx="445" cy="207" r="1.8"/>
+            <path class="scene__cap scene__cap--small" d="M452 226 c0-7 6-12 12-12 s12 5 12 12 z"/>
+            <rect class="scene__stem" x="461" y="226" width="6" height="10" rx="2.5"/>
+          </g>
+          <ellipse class="scene__rim" cx="320" cy="206" rx="42" ry="11"/>
+          <ellipse class="scene__hole" cx="320" cy="208" rx="32" ry="7"/>
+          <g class="scene__rabbit" transform="translate(358 140)">
+            <ellipse cx="9" cy="-6" rx="4.2" ry="17" transform="rotate(-10 9 -6)"/>
+            <ellipse cx="19" cy="-6" rx="4.2" ry="17" transform="rotate(12 19 -6)"/>
+            <circle cx="14" cy="18" r="13"/>
+            <ellipse cx="22" cy="48" rx="19" ry="23"/>
+            <circle cx="40" cy="58" r="6"/>
+            <ellipse cx="12" cy="70" rx="11" ry="4"/>
+          </g>
+          <g class="scene__watch">
+            <path class="scene__chain" d="M366 188 C 360 182, 356 178, 350 178"/>
+            <circle class="scene__watch-face" cx="344" cy="178" r="7.5"/>
+            <path class="scene__watch-hands" d="M344 174.5V178l2.4 1.6"/>
+          </g>
+        </svg>
+
+          <button type="button" class="rabbit-button" id="rabbit-button" data-action="rabbit-ask"
+                  aria-controls="rabbit-says" aria-expanded="false" title="Ask the White Rabbit">
+            <span class="visually-hidden">Ask the White Rabbit for a question to explore</span>
+          </button>
+
+          <!-- The White Rabbit's question; filled in by app.js -->
+          <div class="rabbit-says" id="rabbit-says" role="region" aria-labelledby="rabbit-says-label" hidden>
+            <p class="rabbit-says__label" id="rabbit-says-label">The White Rabbit wonders…</p>
+            <p class="rabbit-says__question" id="rabbit-question" aria-live="polite"></p>
+            <div class="rabbit-says__actions">
+              <button type="button" class="btn btn--light btn--small" data-action="rabbit-start-trail">Follow this question</button>
+              <button type="button" class="text-button text-button--on-dark" data-action="rabbit-ask">Ask another</button>
+            </div>
+            <button type="button" class="icon-button rabbit-says__close" data-action="rabbit-close" aria-label="Close the White Rabbit’s question">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- The most recently updated trail; filled in by app.js -->
+        <section class="feature" id="continue" aria-labelledby="continue-title" hidden></section>
+      </header>
+
+      <!-- Says the example trails are examples; shown while any are on the dashboard, until dismissed -->
+      <aside class="sample-notice" id="sample-notice" aria-labelledby="sample-notice-title" hidden>
+        <span class="sample-notice__card" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 20.4s-7.6-4.8-7.6-10.3A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.6 2.5c0 5.5-7.6 10.3-7.6 10.3z"/></svg>
+        </span>
+        <div class="sample-notice__body">
+          <h2 class="sample-notice__title" id="sample-notice-title">These are example trails</h2>
+          <p class="sample-notice__text" id="sample-notice-text"></p>
+        </div>
+        <div class="sample-notice__actions">
+          <button type="button" class="btn btn--secondary btn--small" data-action="start-tour">Take the tour</button>
+          <button type="button" class="text-button" data-action="dismiss-sample-notice">Got it<span class="visually-hidden">, hide this note</span></button>
+        </div>
+      </aside>
 
       <div class="dash-grid" id="dash-grid">
-        <section class="dash-trails" aria-labelledby="all-trails-heading">
-          <h2 class="section-heading" id="all-trails-heading">All trails</h2>
-          <!-- Trail rows are created by app.js -->
-          <ol class="trail-list surface" id="trail-list"></ol>
+        <section class="chapters" aria-labelledby="all-trails-heading">
+          <div class="section-head">
+            <h2 class="section-heading" id="all-trails-heading">Your trails</h2>
+            <p class="section-head__meta" id="trail-list-meta"></p>
+          </div>
+          <!-- One chapter per trail, created by app.js -->
+          <ol class="trail-grid" id="trail-list"></ol>
         </section>
 
-        <section class="recent" aria-labelledby="recent-heading">
-          <h2 class="section-heading" id="recent-heading">Recent discoveries</h2>
-          <!-- The newest discoveries across all trails, created by app.js -->
-          <ol class="recent-list" id="recent-list"></ol>
+        <!-- The curiosity cabinet: discoveries from every trail, newest first, as collected curiosities -->
+        <section class="cabinet" aria-labelledby="cabinet-heading" data-tour="cabinet">
+          <div class="cabinet__head">
+            <div>
+              <h2 class="section-heading" id="cabinet-heading">Curiosity cabinet</h2>
+              <p class="cabinet__lede" id="cabinet-meta"></p>
+            </div>
+            <button type="button" class="btn btn--secondary btn--small" id="cabinet-more" data-action="cabinet-more" aria-controls="recent-list" hidden></button>
+          </div>
+          <!-- Created by app.js -->
+          <ol class="cabinet__shelf" id="recent-list"></ol>
         </section>
+
+        <aside class="dash-side">
+          <!-- The trail closest to its next milestone; filled in by app.js -->
+          <section class="side-section destination" id="next-up" aria-labelledby="next-up-heading" hidden></section>
+
+          <!-- The four milestones across every trail; each opens its details below -->
+          <section class="side-section collection" aria-labelledby="achievements-heading" data-tour="achievements">
+            <h2 class="side-heading" id="achievements-heading">Achievements</h2>
+            <ol class="emblem-grid" id="achievement-list"></ol>
+            <div class="milestone-detail" id="achievement-detail" role="region" hidden></div>
+          </section>
+
+          <!-- A suggestion drawn from your own trails; filled in by app.js -->
+          <section class="side-section nudge" id="nudge" aria-labelledby="nudge-heading" hidden></section>
+        </aside>
       </div>
 
       <!-- Shown only when there are no trails -->
-      <div class="empty-state surface" id="empty-state" hidden>
+      <div class="empty-state surface" id="empty-state" data-tour="empty-state" hidden>
         <svg class="trail-art" viewBox="0 0 240 92" aria-hidden="true" focusable="false">
           <path class="trail-art__path" d="M14 22 C 60 6, 74 58, 118 46 S 166 26, 176 60"/>
           <circle class="trail-art__start" cx="14" cy="22" r="6"/>
           <ellipse class="trail-art__rim" cx="194" cy="70" rx="36" ry="12"/>
           <ellipse class="trail-art__hole" cx="194" cy="71.5" rx="25" ry="7.5"/>
         </svg>
-        <h2>No trails yet</h2>
+        <h2>Every trail starts with a question</h2>
         <p>
-          A trail starts with a question you’re curious about. Create one, then add each
-          website you find along the way.
+          Write down something you’re curious about, then add each website you find along the way.
+          Your first discovery earns <strong>First find</strong>.
         </p>
         <a class="btn btn--primary" href="#/trails/new">
           <span aria-hidden="true">+</span> Start a trail
@@ -134,49 +251,62 @@
           <span aria-hidden="true">←</span> <span data-cancel-label>My trails</span>
         </a>
 
-        <div class="form-card surface">
-          <p class="eyebrow" id="trail-form-eyebrow">New trail</p>
-          <h1 class="form-card__title" id="trail-form-title" tabindex="-1">Start a new trail</h1>
-          <p class="form-card__intro">Name your research and write down the question that started it.</p>
+        <div class="form-layout">
+          <div class="form-card surface">
+            <p class="eyebrow" id="trail-form-eyebrow">New trail</p>
+            <h1 class="form-card__title" id="trail-form-title" tabindex="-1">Start a new trail</h1>
+            <p class="form-card__intro">Name your research and write down the question that started it.</p>
 
-          <!-- Shown if saving fails -->
-          <p class="form-alert" id="trail-form-alert" role="alert" hidden></p>
+            <!-- Shown if saving fails -->
+            <p class="form-alert" id="trail-form-alert" role="alert" hidden></p>
 
-          <form id="trail-form" novalidate>
-            <div class="field">
-              <label for="trail-title-input">Trail title <span class="field__tag field__tag--required">Required</span></label>
-              <input id="trail-title-input" name="title" type="text" maxlength="80" autocomplete="off"
-                     placeholder="e.g. Exploring Game Development" aria-describedby="trail-title-input-error">
-              <p class="field__error" id="trail-title-input-error" hidden></p>
-            </div>
+            <form id="trail-form" novalidate>
+              <div class="field">
+                <label for="trail-question-input">Starting question <span class="field__tag field__tag--required">Required</span></label>
+                <input id="trail-question-input" class="field__question" name="question" type="text" maxlength="140" autocomplete="off"
+                       placeholder="How are video games made?"
+                       aria-describedby="trail-question-input-hint trail-question-input-error">
+                <p class="field__hint" id="trail-question-input-hint">The question you were trying to answer when you started.</p>
+                <p class="field__error" id="trail-question-input-error" hidden></p>
+              </div>
 
-            <div class="field">
-              <label for="trail-question-input">Starting question <span class="field__tag field__tag--required">Required</span></label>
-              <input id="trail-question-input" class="field__question" name="question" type="text" maxlength="140" autocomplete="off"
-                     placeholder="e.g. How are video games made?"
-                     aria-describedby="trail-question-input-hint trail-question-input-error">
-              <p class="field__hint" id="trail-question-input-hint">The question you were trying to answer when you started.</p>
-              <p class="field__error" id="trail-question-input-error" hidden></p>
-            </div>
+              <div class="field">
+                <label for="trail-title-input">Trail title <span class="field__tag field__tag--required">Required</span></label>
+                <input id="trail-title-input" name="title" type="text" maxlength="80" autocomplete="off"
+                       placeholder="e.g. Exploring Game Development" aria-describedby="trail-title-input-error">
+                <p class="field__error" id="trail-title-input-error" hidden></p>
+              </div>
 
-            <div class="field">
-              <label for="trail-description-input">Description <span class="field__tag">Optional</span></label>
-              <textarea id="trail-description-input" name="description" rows="3" maxlength="300"
-                        placeholder="What are you hoping to learn?"></textarea>
-            </div>
+              <div class="field">
+                <label for="trail-description-input">Description <span class="field__tag">Optional</span></label>
+                <textarea id="trail-description-input" name="description" rows="3" maxlength="300"
+                          placeholder="What are you hoping to learn?"></textarea>
+              </div>
 
-            <div class="form-actions">
-              <a class="btn btn--secondary" href="#/" data-cancel="trail-form">Cancel</a>
-              <button type="submit" class="btn btn--primary" id="trail-form-submit">Create trail</button>
-            </div>
-          </form>
+              <div class="form-actions">
+                <a class="btn btn--secondary" href="#/" data-cancel="trail-form">Cancel</a>
+                <button type="submit" class="btn btn--primary" id="trail-form-submit">Create trail</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- How a trail grows, with the milestones it can earn; filled in by app.js -->
+          <aside class="form-aside" aria-labelledby="trail-guide-heading">
+            <h2 class="form-aside__title" id="trail-guide-heading">How a trail grows</h2>
+            <ol class="guide-steps">
+              <li><strong>Ask a question.</strong> It’s the first stop on your trail.</li>
+              <li><strong>Add discoveries.</strong> Each website you find becomes the next stop.</li>
+              <li><strong>Reach milestones.</strong> They mark how far the question has taken you.</li>
+            </ol>
+            <ol class="guide-milestones" id="guide-milestones"></ol>
+          </aside>
         </div>
       </div>
     </section>
 
 
     <!-- =====================================================
-         SCREEN 3: TRAIL + TIMELINE   (#/trails/ID)
+         SCREEN 3: TRAIL + JOURNEY   (#/trails/ID)
          ===================================================== -->
     <section class="screen" id="screen-trail" aria-labelledby="trail-title">
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -184,90 +314,149 @@
         <span class="breadcrumb__current" id="trail-breadcrumb" aria-current="page"></span>
       </nav>
 
-      <header class="trail-header">
-        <span class="monogram monogram--large" id="trail-mark" aria-hidden="true"></span>
-
-        <div class="trail-header__text">
-          <h1 class="trail-header__title" id="trail-title" tabindex="-1"></h1>
-          <p class="trail-header__description" id="trail-description"></p>
-
-          <dl class="trail-stats">
-            <div><dt>Discoveries</dt><dd id="trail-stat-count"></dd></div>
-            <div><dt>Started</dt><dd id="trail-stat-started"></dd></div>
-            <div><dt>Last updated</dt><dd id="trail-stat-updated"></dd></div>
-          </dl>
+      <header class="trail-hero">
+        <div class="trail-hero__main">
+          <div class="trail-hero__heading">
+            <span class="pip pip--large" id="trail-mark" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow eyebrow--on-dark" id="trail-started"></p>
+              <h1 class="trail-hero__title" id="trail-title" tabindex="-1"></h1>
+            </div>
+          </div>
+          <p class="trail-hero__question" id="trail-question"></p>
+          <p class="trail-hero__description" id="trail-description"></p>
         </div>
 
-        <div class="trail-header__actions">
-          <a class="btn btn--primary" id="trail-add-discovery" href="#/">
-            <span aria-hidden="true">+</span> Add discovery
-          </a>
-          <div class="trail-header__manage">
-            <a class="text-button" id="trail-edit-link" href="#/">Edit trail</a>
-            <button type="button" class="text-button text-button--danger" data-action="delete-trail">Delete trail</button>
+        <div class="trail-hero__side">
+          <div class="trail-hero__add">
+            <button type="button" class="btn btn--light" data-action="focus-quick-find" data-tour="quick-find">
+              <span aria-hidden="true">+</span> Quick find
+            </button>
+            <a class="btn btn--on-dark" id="trail-add-discovery" href="#/" data-tour="journal-entry">Journal entry</a>
           </div>
+          <div class="trail-hero__manage">
+            <a class="text-button text-button--on-dark" id="trail-edit-link" href="#/">Edit trail</a>
+            <button type="button" class="text-button text-button--on-dark text-button--danger" data-action="delete-trail">Delete trail</button>
+          </div>
+          <dl class="trail-stats">
+            <div><dt>Discoveries</dt><dd id="trail-stat-count"></dd></div>
+            <div><dt>Days exploring</dt><dd id="trail-stat-days"></dd></div>
+            <div><dt>Last find</dt><dd id="trail-stat-updated"></dd></div>
+          </dl>
         </div>
       </header>
 
-      <!-- The journey: the question, each discovery in order, then the next step -->
+      <!-- Milestones for this trail; filled in by app.js from milestones.js -->
+      <section class="progress-panel" aria-labelledby="trail-progress-heading">
+        <div class="progress-panel__rank" id="trail-rank"></div>
+        <div class="progress-panel__track">
+          <h2 class="visually-hidden" id="trail-progress-heading">Trail milestones</h2>
+          <ol class="milestone-track" id="milestone-track"></ol>
+        </div>
+        <!-- Opened by selecting a milestone above; filled in by app.js -->
+        <div class="milestone-detail milestone-detail--wide" id="trail-milestone-detail" role="region" hidden></div>
+      </section>
+
+      <!-- The journey: the question, each discovery in order, then the rabbit hole -->
       <section class="journey" aria-labelledby="journey-heading">
-        <h2 class="visually-hidden" id="journey-heading">Discoveries, in the order you found them</h2>
-        <!-- Timeline items are created by app.js -->
-        <ol class="timeline" id="timeline"></ol>
+        <div class="journey__head">
+          <h2 class="section-heading" id="journey-heading">The journey</h2>
+          <p class="journey__summary" id="journey-summary"></p>
+        </div>
+        <div class="journey__map" id="journey-map">
+          <!-- The winding path, drawn by app.js through the stop markers -->
+          <svg class="journey__path" id="journey-path" aria-hidden="true" focusable="false"></svg>
+          <ol class="journey__stops" id="timeline"></ol>
+        </div>
       </section>
     </section>
 
 
     <!-- =====================================================
-         SCREEN 4: ADD / EDIT DISCOVERY
+         SCREEN 4: THE JOURNAL (add / edit a discovery)
          (#/trails/ID/discoveries/new, #/trails/ID/discoveries/ID/edit)
+         An open book: the trail on the left page, the entry on the right.
          ===================================================== -->
     <section class="screen" id="screen-discovery-form" aria-labelledby="discovery-form-title">
-      <div class="form-page">
+      <div class="journal-page">
         <a class="back-link" href="#/" data-cancel="discovery-form">
           <span aria-hidden="true">←</span> Back to trail
         </a>
 
-        <div class="form-card surface">
-          <p class="trail-chip">On: <strong id="discovery-form-trail"></strong></p>
-          <h1 class="form-card__title" id="discovery-form-title" tabindex="-1">Add a discovery</h1>
-          <p class="form-card__intro" id="discovery-form-intro"></p>
+        <div class="journal">
+          <!-- The trail this discovery belongs to, and what saving it reaches; filled in by app.js -->
+          <aside class="journal__left" id="discovery-form-context" aria-label="This trail"></aside>
 
-          <p class="form-alert" id="discovery-form-alert" role="alert" hidden></p>
+          <div class="journal__right">
+            <span class="journal__ribbon" aria-hidden="true"></span>
+            <p class="eyebrow" id="discovery-form-step"></p>
+            <h1 class="journal__title" id="discovery-form-title" tabindex="-1">A new page in your journal</h1>
+            <p class="journal__intro" id="discovery-form-intro"></p>
 
-          <form id="discovery-form" novalidate>
-            <div class="field">
-              <label for="discovery-title-input">Website title <span class="field__tag field__tag--required">Required</span></label>
-              <input id="discovery-title-input" name="title" type="text" maxlength="120" autocomplete="off"
-                     placeholder="e.g. A Tour of the C# Language" aria-describedby="discovery-title-input-error">
-              <p class="field__error" id="discovery-title-input-error" hidden></p>
-            </div>
+            <fieldset class="mode-switch">
+              <legend class="visually-hidden">How much do you want to write?</legend>
+              <label class="mode-switch__option">
+                <input type="radio" name="journal-mode" value="quick">
+                <span><strong>Quick find</strong> Title and link</span>
+              </label>
+              <label class="mode-switch__option">
+                <input type="radio" name="journal-mode" value="journal">
+                <span><strong>Journal entry</strong> What you noticed and learned</span>
+              </label>
+            </fieldset>
 
-            <div class="field">
-              <label for="discovery-url-input">Website URL <span class="field__tag field__tag--required">Required</span></label>
-              <input id="discovery-url-input" name="url" type="url" autocomplete="off" inputmode="url"
-                     placeholder="https://"
-                     aria-describedby="discovery-url-input-hint discovery-url-input-error">
-              <p class="field__hint" id="discovery-url-input-hint">Copy it from your browser’s address bar. It should start with https://</p>
-              <p class="field__error" id="discovery-url-input-error" hidden></p>
-            </div>
+            <p class="form-alert" id="discovery-form-alert" role="alert" hidden></p>
 
-            <div class="field">
-              <label for="discovery-note-input">Notes <span class="field__tag">Optional</span></label>
-              <textarea id="discovery-note-input" name="note" rows="4" maxlength="500"
-                        placeholder="Why was this interesting? Where did it lead you next?"></textarea>
-            </div>
+            <form id="discovery-form" novalidate>
+              <div class="field">
+                <label for="discovery-title-input">What did you find? <span class="field__tag field__tag--required">Required</span></label>
+                <input id="discovery-title-input" name="title" type="text" maxlength="120" autocomplete="off"
+                       placeholder="The page or resource’s title" aria-describedby="discovery-title-input-error">
+                <p class="field__error" id="discovery-title-input-error" hidden></p>
+              </div>
 
-            <div class="form-actions">
-              <a class="btn btn--secondary" href="#/" data-cancel="discovery-form">Cancel</a>
-              <button type="submit" class="btn btn--primary" id="discovery-form-submit">Save discovery</button>
-            </div>
-          </form>
+              <div class="field">
+                <label for="discovery-url-input">Where did you find it? <span class="field__tag field__tag--required">Required</span></label>
+                <input id="discovery-url-input" name="url" type="url" autocomplete="off" inputmode="url"
+                       placeholder="https://"
+                       aria-describedby="discovery-url-input-hint discovery-url-input-error">
+                <p class="field__hint" id="discovery-url-input-hint">Copy the link from your browser’s address bar.</p>
+                <p class="field__error" id="discovery-url-input-error" hidden></p>
+              </div>
+
+              <!-- Hidden in Quick find mode; what's typed here is kept either way -->
+              <div class="journal__reflect" id="journal-reflect">
+                <div class="field field--lined">
+                  <label for="discovery-highlight-input">What caught your attention? <span class="field__tag">Optional</span></label>
+                  <textarea id="discovery-highlight-input" name="highlight" rows="2" maxlength="200"
+                            placeholder="A line, an idea, a surprise…" aria-describedby="discovery-highlight-input-count"></textarea>
+                  <p class="field__count" id="discovery-highlight-input-count" data-count-for="discovery-highlight-input"></p>
+                </div>
+
+                <div class="field field--lined">
+                  <label for="discovery-note-input">What did you learn? <span class="field__tag">Optional</span></label>
+                  <textarea id="discovery-note-input" name="note" rows="5" maxlength="500"
+                            placeholder="What does it change about your question? Where might it lead next?"
+                            aria-describedby="discovery-note-input-count"></textarea>
+                  <p class="field__count" id="discovery-note-input-count" data-count-for="discovery-note-input"></p>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <a class="btn btn--secondary" href="#/" data-cancel="discovery-form">Cancel</a>
+                <button type="submit" class="btn btn--primary" id="discovery-form-submit">Add to my trail</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
+
+  <footer class="site-footer">
+    <p><span class="site-footer__name">Rabbit Tracks</span> · Follow a question wherever it leads.</p>
+  </footer>
 
 
   <!-- =====================================================
@@ -291,37 +480,211 @@
        SETTINGS
        A native <dialog>: it keeps focus inside, closes with Esc,
        and returns focus to the Settings button on its own.
+       Rows marked data-source-only appear only with sample data
+       ("sample") or only with the API ("api"); see app.js.
        ===================================================== -->
   <dialog class="dialog settings" id="settings" aria-labelledby="settings-title">
     <div class="settings__header">
-      <h2 class="dialog__title" id="settings-title">Settings</h2>
+      <div class="settings__brand">
+        <svg class="settings__mark" viewBox="0 0 44 30" aria-hidden="true" focusable="false">
+          <ellipse cx="4" cy="5.5" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="8.6" cy="4" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="11" cy="12" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="15.6" cy="10.5" rx="1.5" ry="2.1" class="logo__print"/>
+          <ellipse cx="29" cy="21" rx="13.5" ry="7" class="logo__rim"/>
+          <ellipse cx="29" cy="22" rx="9" ry="4.4" class="logo__hole"/>
+        </svg>
+        <div>
+          <h2 class="dialog__title" id="settings-title">Settings</h2>
+          <p class="settings__product">Rabbit Tracks · Research journal</p>
+        </div>
+      </div>
       <button type="button" class="icon-button" data-action="close-settings" aria-label="Close settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
 
-    <div class="settings__row">
-      <div>
-        <p class="settings__label">Reset sample data</p>
-        <p class="settings__hint">Bring back the four example trails.</p>
-      </div>
-      <button type="button" class="btn btn--secondary btn--small" data-action="reset-data">Reset</button>
-    </div>
+    <div class="settings__body">
+      <!-- What happened to the last data action, if it failed -->
+      <p class="settings__status" id="settings-status" role="alert" hidden></p>
 
-    <div class="settings__row">
-      <div>
-        <p class="settings__label">Clear all trails</p>
-        <p class="settings__hint">Remove every trail to see the empty dashboard.</p>
-      </div>
-      <button type="button" class="btn btn--danger-outline btn--small" data-action="clear-trails">Clear all</button>
+      <section class="settings__section" aria-labelledby="settings-experience-heading">
+        <h3 class="settings__heading" id="settings-experience-heading">Experience</h3>
+        <div class="settings__row">
+          <div>
+            <p class="settings__label">Guided tour</p>
+            <p class="settings__hint">A short walk past the parts you’ll use most: trails, Quick find, journal entries, the curiosity cabinet, and milestones.</p>
+          </div>
+          <button type="button" class="btn btn--secondary btn--small" data-action="start-tour">Take the tour again</button>
+        </div>
+        <div class="settings__row">
+          <div>
+            <p class="settings__label">Welcome</p>
+            <p class="settings__hint">The one-page introduction to how a trail works.</p>
+          </div>
+          <button type="button" class="btn btn--secondary btn--small" data-action="show-welcome">Show the welcome</button>
+        </div>
+        <div class="settings__row">
+          <div>
+            <label class="settings__label" for="motion-toggle">Reduce motion</label>
+            <p class="settings__hint" id="motion-hint">Turns off the path drawing itself in, cards lifting, and the celebration animations. Everything is still shown, just without movement.</p>
+          </div>
+          <span class="switch">
+            <input type="checkbox" id="motion-toggle" role="switch" aria-describedby="motion-hint">
+            <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+          </span>
+        </div>
+      </section>
+
+      <section class="settings__section" aria-labelledby="settings-data-heading">
+        <h3 class="settings__heading" id="settings-data-heading">Your research data</h3>
+        <div class="storage-card">
+          <p class="storage-card__label" id="data-source-label"></p>
+          <p class="settings__hint" id="data-source"></p>
+          <p class="connection-status" id="connection-status" role="status" data-source-only="api" hidden></p>
+          <button type="button" class="btn btn--secondary btn--small" data-action="check-connection" data-source-only="api" hidden>Check again</button>
+        </div>
+        <p class="settings__hint settings__aside">
+          Your preferences (the tour, the welcome, reduce motion, and the examples note) are remembered by
+          this browser only. They aren’t part of your trails and don’t follow you to other browsers or devices.
+        </p>
+      </section>
+
+      <section class="settings__section" aria-labelledby="settings-examples-heading">
+        <h3 class="settings__heading" id="settings-examples-heading">Example trails</h3>
+        <div class="settings__row" data-source-only="sample">
+          <div>
+            <p class="settings__label">Restore the examples</p>
+            <p class="settings__hint">Puts the four original example trails back. This <strong>replaces everything in this tab</strong>, including trails and discoveries you’ve added, so it asks first.</p>
+          </div>
+          <button type="button" class="btn btn--secondary btn--small" data-action="reset-data">Restore examples…</button>
+        </div>
+        <div class="settings__row" data-source-only="api">
+          <p class="settings__hint">Example trails are added to the database by the server’s seed script. They’re marked <strong>Example</strong> on the dashboard, and you can delete any of them from its card like any other trail.</p>
+        </div>
+      </section>
+
+      <section class="settings__section settings__section--danger" aria-labelledby="settings-manage-heading">
+        <h3 class="settings__heading" id="settings-manage-heading">Manage your research</h3>
+        <div class="settings__row" data-source-only="sample">
+          <div>
+            <p class="settings__label">Clear all trails</p>
+            <p class="settings__hint" id="clear-summary">Removes every trail and discovery in this tab, for an empty journal.</p>
+          </div>
+          <button type="button" class="btn btn--danger-outline btn--small" data-action="clear-trails">Clear all trails…</button>
+        </div>
+        <div class="settings__row" data-source-only="api">
+          <p class="settings__hint">To remove research, delete a trail from its card or its page, or a discovery from its trail. Each delete asks first. Saved trails have no “clear everything”, so nothing can be wiped by accident.</p>
+        </div>
+      </section>
+
+      <section class="settings__section" aria-labelledby="settings-about-heading">
+        <h3 class="settings__heading" id="settings-about-heading">About Rabbit Tracks</h3>
+        <p class="settings__about">A research journal for following a question wherever it leads. The trail keeps the order you found things in, so you can retrace how a question became what you know.</p>
+        <ol class="settings__flow">
+          <li><strong>Ask</strong> a question</li>
+          <li><strong>Start</strong> a trail</li>
+          <li><strong>Save</strong> what you find</li>
+          <li><strong>Write</strong> what you learned</li>
+          <li><strong>Follow</strong> it deeper</li>
+        </ol>
+      </section>
     </div>
   </dialog>
+
+
+  <!-- =====================================================
+       WELCOME
+       Shown once to a new visitor on the dashboard, and again from
+       Settings. Begin exploring starts the tour; Skip closes it.
+       ===================================================== -->
+  <dialog class="dialog welcome-dialog" id="welcome-dialog" aria-labelledby="welcome-title" aria-describedby="welcome-lede">
+    <div class="welcome-dialog__scene" aria-hidden="true">
+      <svg viewBox="0 0 320 96" focusable="false">
+        <g class="scene__stars">
+          <path d="M28 20l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z"/>
+          <path d="M120 12l1 2.8 2.8 1-2.8 1-1 2.8-1-2.8-2.8-1 2.8-1z"/>
+          <circle cx="78" cy="30" r="1.4"/><circle cx="196" cy="18" r="1.3"/><circle cx="300" cy="52" r="1.4"/>
+        </g>
+        <circle class="scene__moon" cx="262" cy="26" r="15"/>
+        <circle class="scene__moon-shade" cx="269" cy="22" r="13"/>
+        <path class="welcome-dialog__path" d="M18 80 C 60 66, 70 54, 120 56 S 190 68, 220 64"/>
+        <circle class="welcome-dialog__q" cx="18" cy="80" r="10"/>
+        <text class="welcome-dialog__q-mark" x="18" y="85" text-anchor="middle">?</text>
+        <circle class="welcome-dialog__find" cx="72" cy="61" r="5"/>
+        <circle class="welcome-dialog__find" cx="122" cy="56" r="5"/>
+        <circle class="welcome-dialog__find welcome-dialog__find--gold" cx="172" cy="63" r="6"/>
+        <ellipse class="scene__rim" cx="254" cy="68" rx="30" ry="8.5"/>
+        <ellipse class="scene__hole" cx="254" cy="69.5" rx="21" ry="5.2"/>
+      </svg>
+    </div>
+    <div class="welcome-dialog__body">
+      <p class="eyebrow">Welcome to Rabbit Tracks</p>
+      <h2 class="welcome-dialog__title" id="welcome-title" tabindex="-1">Follow a question. Collect discoveries. See where your curiosity takes you.</h2>
+      <p class="welcome-dialog__lede" id="welcome-lede">Rabbit Tracks is a research journal. It keeps the path you took from a question to what you know now, so you can always retrace it.</p>
+      <ol class="welcome-steps">
+        <li><strong>Start with a question</strong> you want answered.</li>
+        <li><strong>Make it a trail.</strong> A trail is one line of research, built around that question.</li>
+        <li><strong>Save discoveries</strong> as you go. A <em>Quick find</em> is just a title and a link.</li>
+        <li><strong>Write a journal entry</strong> when something catches your attention: what it was, and what you learned.</li>
+        <li><strong>Keep following.</strong> Milestones at 1, 3, 5, and 10 discoveries mark how deep a trail goes.</li>
+      </ol>
+      <p class="welcome-dialog__note" id="welcome-note" hidden>The trails you’ll see first are examples, there to show how a trail grows. Explore them, then start your own.</p>
+      <div class="dialog__actions welcome-dialog__actions">
+        <button type="button" class="btn btn--secondary" data-action="skip-welcome">Skip the introduction</button>
+        <button type="button" class="btn btn--primary" data-action="begin-exploring">Begin exploring <span aria-hidden="true">→</span></button>
+      </div>
+      <p class="welcome-dialog__hint">Begin exploring takes a seven-stop tour. You can leave it at any time, or take it again from Settings.</p>
+    </div>
+  </dialog>
+
+
+  <!-- =====================================================
+       GUIDED TOUR
+       One card that moves between the parts of the page marked
+       data-tour="…" (see TOUR_STEPS in app.js). While it's open the
+       rest of the page is inert, so Tab stays in the card; Esc,
+       Skip, or the close button ends it.
+       ===================================================== -->
+  <div class="tour-spotlight" id="tour-spotlight" hidden></div>
+  <section class="tour" id="tour" role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-text" hidden>
+    <div class="tour__top">
+      <p class="tour__progress" id="tour-progress"></p>
+      <ol class="tour__dots" id="tour-dots" aria-hidden="true"></ol>
+      <button type="button" class="icon-button tour__close" data-action="end-tour" aria-label="Close the tour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <h2 class="tour__title" id="tour-title" tabindex="-1"></h2>
+    <p class="tour__text" id="tour-text"></p>
+    <div class="tour__actions">
+      <button type="button" class="text-button" data-action="end-tour" id="tour-skip">Skip tour</button>
+      <span class="tour__nav">
+        <button type="button" class="btn btn--secondary btn--small" data-action="tour-back" id="tour-back">Back</button>
+        <button type="button" class="btn btn--primary btn--small" data-action="tour-next" id="tour-next">Next</button>
+      </span>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       A CURIOSITY, UP CLOSE
+       Everything saved for one discovery in the cabinet; filled in by app.js.
+       ===================================================== -->
+  <dialog class="dialog curio-dialog" id="curio-dialog" aria-labelledby="curio-dialog-title"></dialog>
 
   <!-- Short confirmation messages ("Discovery added") -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- Order matters: app.js uses `sampleData` from sample-data.js -->
+  <!-- Shown when a new discovery reaches a milestone; filled in by app.js.
+       Screen readers hear it through #announcer, so it isn't a live region itself. -->
+  <div class="achievement" id="achievement" hidden></div>
+  <p class="visually-hidden" id="announcer" role="status" aria-live="polite"></p>
+
+  <!-- Order matters: app.js uses `sampleData`, `apiData`, and `milestones` from the files before it -->
   <script src="js/sample-data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/milestones.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
